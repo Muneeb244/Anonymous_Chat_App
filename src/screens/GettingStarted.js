@@ -9,49 +9,41 @@ const GettingStarted = () => {
 
     const styles = StyleSheet.create({
         container: {
-            // width: '100%',
-            // height: '100%',
             flex: 1
         },
-        // image: {
-        //     flex: 1,
-        //     justifyContent: 'center',
-        // },
         heading: {
-            height: height * 0.6,
+            height: height * 0.55,
+            // backgroundColor: "#fff",
             color: "#000"
         },
         text: {
             fontSize: 150,
             fontWeight: 'bold',
+            includeFontPadding: false,
         },
         line1: {
             position: 'absolute',
-            // top: height * 0.008,
             right: -height * 0.03,
             height: height * 0.25,
             color: '#FFEE97',
         },
         line2: {
-            // fontSize: 150,
-            // fontWeight: 'bold',
             position: 'absolute',
             top: height * 0.18,
             left: -height * 0.11,
-            // backgroundColor: 'blue',
             height: height * 0.3,
             width: width * 1.5,
         },
         line3: {
             position: 'absolute',
             top: height * 0.36,
-            left: -height * 0.09,
+            left: -height * 0.11,
             height: height * 0.3,
             width: width * 1.5,
             color: '#C6F896'
         },
         info: {
-            marginTop: height * 0.05,
+            marginTop: height * 0.03,
             alignSelf: 'center',
             borderTopLeftRadius: 30,
             borderTopRightRadius: 30,
@@ -66,13 +58,12 @@ const GettingStarted = () => {
             fontWeight: 'bold',
             color: '#000',
             lineHeight: 30,
-            // marginTop: height * 0.05,
         },
         infoText: {
             lineHeight: 20,
         },
         start: {
-            marginTop: height * 0.05,
+            marginTop: height * 0.03,
             alignSelf: 'center',
             width: width * 0.85,
             height: height * 0.1,
@@ -101,7 +92,7 @@ const GettingStarted = () => {
         <View style={styles.container}>
             <Background>
                 <View style={styles.heading}>
-                    <Text style={[styles.line1, styles.text]}>BAD</Text>
+                    <Text style={[styles.line1, styles.text]} >BAD</Text>
                     <LinearTextGradient
                         style={[styles.line2, styles.text]}
                         locations={[0, 1]}
@@ -110,7 +101,6 @@ const GettingStarted = () => {
                         end={{ x: 0, y: 1 }}
                     >
                         <Text>DABOOM</Text>
-                        {/* THIS IS TEXT GRADIENT */}
                     </LinearTextGradient>
                     <Text style={[styles.line3, styles.text]}>OOM</Text>
                 </View>

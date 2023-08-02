@@ -3,11 +3,9 @@ import React from 'react'
 
 const Background = ({ children }) => {
     return (
-        // <View style={styles.container}>
         <ImageBackground source={require('../assets/background.png')} resizeMode='cover' style={styles.image} blurRadius={50} >
             {children}
         </ImageBackground>
-        // </View>
     )
 }
 
