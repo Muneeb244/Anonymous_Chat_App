@@ -4,16 +4,17 @@ import { NavigationContainer } from '@react-navigation/native'
 import AuthNavigation from './src/navigations/AuthNavigation'
 import ForgotPassword from './src/screens/Auth/ForgotPassword'
 import OTP from './src/screens/Auth/OTP'
+import Home from './src/screens/main/Home'
 
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <AuthNavigation />
-    </NavigationContainer>
-    // <View style={styles.container}>
-    //   <OTP />
-    // </View>
+    // <NavigationContainer>
+    //   <AuthNavigation />
+    // </NavigationContainer>
+    <View style={styles.container}>
+      <Home />
+    </View>
   )
 }
 

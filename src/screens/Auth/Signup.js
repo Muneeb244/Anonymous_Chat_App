@@ -1,5 +1,5 @@
-import { Image, StyleSheet, Text, View, TextInput, KeyboardAvoidingView } from 'react-native'
-import React from 'react';
+import { Image, StyleSheet, Text, View, TextInput, KeyboardAvoidingView, PermissionsAndroid } from 'react-native'
+import React, { useEffect, useState } from 'react';
 import Background from '../../components/Background'
 import Input from '../../components/Input'
 import FormButton from '../../components/FormButton'
@@ -8,11 +8,60 @@ import ErrorMessage from '../../components/ErrorMessage';
 import { Formik } from "formik";
 // import { loginSchema } from '../../utils/yupSchemas';
 import * as yup from 'yup';
+import Geolocation from 'react-native-geolocation-service';
 
 const Signup = ({navigation}) => {
 
+    const [coordinates, setCoordinates] = useState({});
+
+
+    useEffect(() => {
+        requestLocationPermission();
+    }, [])
+
+    const requestLocationPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                {
+                    title: 'Dadaboom Location Permission',
+                    message:
+                        'Dadaboom needs access to your location ',
+                    buttonNeutral: 'Ask Me Later',
+                    buttonNegative: 'Cancel',
+                    buttonPositive: 'OK',
+                },
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                getLocation();
+            } else {
+                alert('Please allow location permission');
+                // requestLocationPermission();
+                navigation.replace('started')
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+    };
+
+    const getLocation = () => {
+        Geolocation.getCurrentPosition(
+            (position) => {
+                setCoordinates({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                })
+            },
+            (error) => {
+                console.log(error.code, error.message);
+            },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        );
+    }
 
     const temp = (values) => {
+        values.coordinates = coordinates;
+        console.log(values),
         navigation.navigate('otp')
     }
 
@@ -38,7 +87,7 @@ const Signup = ({navigation}) => {
                         <View style={styles.parent}>
                             <Text style={styles.label}>Your name</Text>
                             <TextInput
-                                type='name'
+                                keyboardType='default'
                                 style={styles.input}
                                 placeholder='name'
                                 onChangeText={handleChange('name')}
@@ -53,7 +102,7 @@ const Signup = ({navigation}) => {
                         <View style={styles.parent}>
                             <Text style={styles.label}>Your email address</Text>
                             <TextInput
-                                type='email'
+                                keyboardType='email-address'
                                 style={styles.input}
                                 placeholder='anonymous@email.com'
                                 onChangeText={handleChange('email')}
@@ -68,7 +117,7 @@ const Signup = ({navigation}) => {
                         <View style={styles.parent}>
                             <Text style={styles.label}>Your password</Text>
                             <TextInput
-                                type='password'
+                                keyboardType='default'
                                 style={styles.input}
                                 placeholder='min 6 characters'
                                 onChangeText={handleChange('password')}

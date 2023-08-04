@@ -14,6 +14,7 @@ const Login = ({navigation}) => {
 
     const temp = (values) => {
         console.log(values)
+        navigation.navigate('home')
     }
 
     const loginSchema = yup.object().shape({

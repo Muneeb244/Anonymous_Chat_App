@@ -31,13 +31,13 @@ const GettingStarted = ({navigation}) => {
             position: 'absolute',
             top: height * 0.18,
             left: -height * 0.11,
-            height: height * 0.3,
+            height: height * 0.2,
             width: width * 1.5,
         },
         line3: {
             position: 'absolute',
             top: height * 0.36,
-            left: -height * 0.11,
+            left: -height * 0.09,
             height: height * 0.3,
             width: width * 1.5,
             color: '#C6F896'

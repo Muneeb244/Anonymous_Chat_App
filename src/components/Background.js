@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, ImageBackground } from 'react-native'
 import React from 'react'
 
-const Background = ({ children, stylying }) => {
+const Background = ({ children }) => {
     return (
-        <ImageBackground source={require('../assets/background.png')} resizeMode='cover' style={styles.image} blurRadius={50} >
+        <ImageBackground source={require('../assets/background.png')} resizeMode='cover' style={styles.image} blurRadius={100} >
             {children}
         </ImageBackground>
     )

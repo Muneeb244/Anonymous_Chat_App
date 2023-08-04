@@ -3,7 +3,7 @@ import React from 'react'
 
 const GoogleC = ({label, signup, onPress}) => {
   return (
-    <TouchableOpacity style={[styles.container, signup && {backgroundColor: '#C6F896'}]} onPress={onPress}>
+    <TouchableOpacity style={[styles.container, {backgroundColor: signup ? '#C6F896' : '#fff'}]} onPress={onPress}>
       {!signup && <Image source={require('../assets/google.png')} style={styles.image} />}
       <Text style={styles.googleText}>{label}</Text>
     </TouchableOpacity>
@@ -32,5 +32,6 @@ const styles = StyleSheet.create({
     googleText: {
         marginLeft: 5,
         fontSize: 15,
+        color: "#000",
     }
 })

@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { Formik } from "formik";
 import * as yup from 'yup';
 import FormButton from '../../components/FormButton';
-// import { useToast } from "react-native-toast-notifications";
 
 const OTP = () => {
 
@@ -21,7 +20,6 @@ const OTP = () => {
     useEffect(() => {
         // showToastWithGravity()
         const interval = setInterval(() => {
-            console.log("inside function", count)
             if (count <= 0) {
                 // setResend(false);
                 return clearInterval(interval);
@@ -74,7 +72,7 @@ const OTP = () => {
                         <View style={styles.parent}>
                             <TextInput
                                 keyboardType='numeric'
-                                style={[styles.input, { borderWidth: values.otp1 || errors["otp1"] ? 2 : 0, borderColor: errors["otp1"] ? 'red' : values.otp1 ? '#000' : '#fff' }]}
+                                style={[styles.input, { borderWidth: values.otp1 || errors["otp1"] ? 2 : 0, borderColor: errors["otp1"] ? 'red' : values.otp1 ? 'green' : '#fff' }]}
                                 onChangeText={txt => {
                                     // handleChange('otp1')
                                     setFieldValue('otp1', txt)
@@ -87,7 +85,7 @@ const OTP = () => {
                             />
                             <TextInput
                                 keyboardType='numeric'
-                                style={[styles.input, { borderWidth: values.otp2 || errors["otp2"] ? 2 : 0, borderColor: errors["otp2"] ? 'red' : values.otp2 ? '#000' : '#fff' }]}
+                                style={[styles.input, { borderWidth: values.otp2 || errors["otp2"] ? 2 : 0, borderColor: errors["otp2"] ? 'red' : values.otp2 ? 'green' : '#fff' }]}
                                 onChangeText={txt => {
                                     // handleChange('otp2')
                                     setFieldValue('otp2', txt)
@@ -104,9 +102,8 @@ const OTP = () => {
                             />
                             <TextInput
                                 keyboardType='numeric'
-                                style={[styles.input, { borderWidth: values.otp3 || errors["otp3"] ? 2 : 0, borderColor: errors["otp3"] ? 'red' : values.otp3 ? '#000' : '#fff' }]}
+                                style={[styles.input, { borderWidth: values.otp3 || errors["otp3"] ? 2 : 0, borderColor: errors["otp3"] ? 'red' : values.otp3 ? 'green' : '#fff' }]}
                                 onChangeText={txt => {
-                                    // handleChange('otp3')
                                     setFieldValue('otp3', txt)
                                     if (txt.length === 1) return optRef4.current.focus();
                                     if (txt.length < 1) optRef2.current.focus();
@@ -114,16 +111,14 @@ const OTP = () => {
                                 onKeyPress={({ nativeEvent }) => {
                                     if (nativeEvent.key === 'Backspace') optRef2.current.focus();
                                 }}
-                                // onBlur={handleBlur('otp3')}
                                 value={values.otp3}
                                 ref={optRef3}
                                 maxLength={1}
                             />
                             <TextInput
                                 keyboardType='numeric'
-                                style={[styles.input, { borderWidth: values.otp4 || errors["otp4"] ? 2 : 0, borderColor: errors["otp4"] ? 'red' : values.otp4 ? '#000' : '#fff' }]}
+                                style={[styles.input, { borderWidth: values.otp4 || errors["otp4"] ? 2 : 0, borderColor: errors["otp4"] ? 'red' : values.otp4 ? 'green' : '#fff' }]}
                                 onChangeText={txt => {
-                                    // handleChange('otp4')
                                     setFieldValue('otp4', txt)
                                     if (txt.length < 1) return optRef3.current.focus();
                                 }}

@@ -2641,6 +2641,15 @@ cliui@^6.0.0:
     strip-ansi "^6.0.0"
     wrap-ansi "^6.2.0"
 
+cliui@^7.0.2:
+  version "7.0.4"
+  resolved "https://registry.npmjs.org/cliui/-/cliui-7.0.4.tgz"
+  integrity sha512-OcRE68cOsVMXp1Yvonl/fzkQOyjLSu/8bhPDfQt0e0/Eb283TKP20Fs2MqoPsr9SwA595rRCA+QMzYc9nBP+JQ==
+  dependencies:
+    string-width "^4.2.0"
+    strip-ansi "^6.0.0"
+    wrap-ansi "^7.0.0"
+
 cliui@^8.0.1:
   version "8.0.1"
   resolved "https://registry.npmjs.org/cliui/-/cliui-8.0.1.tgz"
@@ -5618,6 +5627,11 @@ react-is@^17.0.1:
   resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
+react-native-geolocation-service@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.npmjs.org/react-native-geolocation-service/-/react-native-geolocation-service-5.3.1.tgz"
+  integrity sha512-LTXPtPNmrdhx+yeWG47sAaCgQc3nG1z+HLLHlhK/5YfOgfLcAb9HAkhREPjQKPZOUx8pKZMIpdGFUGfJYtimXQ==
+
 react-native-gesture-handler@^2.12.1, "react-native-gesture-handler@>= 1.0.0":
   version "2.12.1"
   resolved "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-2.12.1.tgz"
@@ -5652,10 +5666,13 @@ react-native-text-gradient@^0.1.7:
   resolved "https://registry.npmjs.org/react-native-text-gradient/-/react-native-text-gradient-0.1.7.tgz"
   integrity sha512-QuEwW8TMKBNI5ejmDFu3/SDJh5CIzOi5eL1xNzq8yBEwU5wHaloBxhQ9K0zc16GPkr3KgSUDyU4olQtiYje4mw==
 
-react-native-toast-notifications@^3.3.1:
-  version "3.3.1"
-  resolved "https://registry.npmjs.org/react-native-toast-notifications/-/react-native-toast-notifications-3.3.1.tgz"
-  integrity sha512-yc1Q2nOdIYvAf0GAIlmg8q42hiwpEHnLxkxJ6P+tN6jpcKZ1qzMXlgnmNdyF9cm9VOyHQexEP8952IKNAv1Olw==
+react-native-vector-icons@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.npmjs.org/react-native-vector-icons/-/react-native-vector-icons-10.0.0.tgz"
+  integrity sha512-efMOVbZIebY8RszZPzPBoXi9pvD/NFYmjIDYxRoc9LYSzV8rMJtT8FfcO2hPu85Rn2x9xktha0+qn0B7EqMAcQ==
+  dependencies:
+    prop-types "^15.7.2"
+    yargs "^16.1.1"
 
 react-native@*, react-native@>=0.57, react-native@0.72.3:
   version "0.72.3"
@@ -6760,6 +6777,11 @@ yargs-parser@^18.1.2:
     camelcase "^5.0.0"
     decamelize "^1.2.0"
 
+yargs-parser@^20.2.2:
+  version "20.2.9"
+  resolved "https://registry.npmjs.org/yargs-parser/-/yargs-parser-20.2.9.tgz"
+  integrity sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==
+
 yargs-parser@^21.1.1:
   version "21.1.1"
   resolved "https://registry.npmjs.org/yargs-parser/-/yargs-parser-21.1.1.tgz"
@@ -6781,6 +6803,19 @@ yargs@^15.1.0:
     which-module "^2.0.0"
     y18n "^4.0.0"
     yargs-parser "^18.1.2"
+
+yargs@^16.1.1:
+  version "16.2.0"
+  resolved "https://registry.npmjs.org/yargs/-/yargs-16.2.0.tgz"
+  integrity sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==
+  dependencies:
+    cliui "^7.0.2"
+    escalade "^3.1.1"
+    get-caller-file "^2.0.5"
+    require-directory "^2.1.1"
+    string-width "^4.2.0"
+    y18n "^5.0.5"
+    yargs-parser "^20.2.2"
 
 yargs@^17.3.1, yargs@^17.6.2:
   version "17.7.2"
