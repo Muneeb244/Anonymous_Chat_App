@@ -9,11 +9,11 @@ import { Formik } from "formik";
 // import { loginSchema } from '../../utils/yupSchemas';
 import * as yup from 'yup';
 
-const Signup = () => {
+const Signup = ({navigation}) => {
 
 
     const temp = (values) => {
-        console.log(values)
+        navigation.navigate('otp')
     }
 
     const signupSchema = yup.object().shape({
@@ -80,7 +80,7 @@ const Signup = () => {
                             error={errors["password"]}
                             visible={touched["password"]}
                         />
-                        <FormButton text="Signup" onSubmit={handleSubmit} />
+                        <FormButton text="continue" onSubmit={handleSubmit} />
                     </KeyboardAvoidingView>
 
                 )}

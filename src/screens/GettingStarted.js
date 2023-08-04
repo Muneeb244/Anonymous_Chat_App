@@ -3,7 +3,7 @@ import React from 'react';
 import Background from '../components/Background';
 import { LinearTextGradient } from "react-native-text-gradient";
 
-const GettingStarted = () => {
+const GettingStarted = ({navigation}) => {
 
     const { width, height } = useWindowDimensions();
 
@@ -71,8 +71,9 @@ const GettingStarted = () => {
             backgroundColor: '#C6F896',
         },
         image: {
-            width: 40,
-            height: 40,
+            width: 25,
+            height: 25,
+            marginLeft: 5
         },
         startText: {
             fontSize: 20,
@@ -108,8 +109,8 @@ const GettingStarted = () => {
                     <Text style={styles.infoHeading}>Badaboom</Text>
                     <Text style={styles.infoText}>Welcome to badaboom! add and reply to posts. You see those posts that users has published 10Km away from you</Text>
                 </View>
-                <TouchableOpacity  style={styles.start}>
-                    <View style={styles.startChild} onPress={() => console.log("pressed")} >
+                <TouchableOpacity  style={styles.start} onPress={() => navigation.navigate('login')}>
+                    <View style={styles.startChild} >
                         <Text style={styles.startText}>Start</Text>
                         <Image source={require('../assets/bomb.png')} style={styles.image} />
                     </View>

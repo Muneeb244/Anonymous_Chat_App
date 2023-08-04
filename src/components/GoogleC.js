@@ -1,10 +1,10 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 
-const GoogleC = ({label}) => {
+const GoogleC = ({label, signup, onPress}) => {
   return (
-    <TouchableOpacity style={styles.container}>
-      <Image source={require('../assets/google.png')} style={styles.image} />
+    <TouchableOpacity style={[styles.container, signup && {backgroundColor: '#C6F896'}]} onPress={onPress}>
+      {!signup && <Image source={require('../assets/google.png')} style={styles.image} />}
       <Text style={styles.googleText}>{label}</Text>
     </TouchableOpacity>
   )

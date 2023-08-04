@@ -6,10 +6,10 @@ import FormButton from '../../components/FormButton'
 import GoogleC from '../../components/GoogleC'
 import ErrorMessage from '../../components/ErrorMessage';
 import { Formik } from "formik";
-// import { loginSchema } from '../../utils/yupSchemas';
 import * as yup from 'yup';
+// import { loginSchema } from '../../utils/yupSchemas';
 
-const Login = () => {
+const Login = ({navigation}) => {
 
 
     const temp = (values) => {
@@ -66,7 +66,7 @@ const Login = () => {
                         />
                         <FormButton text="login" onSubmit={handleSubmit} />
                         <View style={styles.forgot}>
-                            <Text style={styles.forgotText}>Forgot password?</Text>
+                            <Text style={styles.forgotText} onPress={() => navigation.navigate('forgot')} >Forgot password?</Text>
                         </View>
                     </KeyboardAvoidingView>
                 )}
@@ -76,6 +76,7 @@ const Login = () => {
                 <Text style={styles.orText}>or</Text>
                 <View style={styles.line}></View>
             </View>
+            <GoogleC label="Sign up" signup={true} onPress={() => navigation.navigate('signup')} />
             <GoogleC label="Sign in with google" />
         </Background>
     )

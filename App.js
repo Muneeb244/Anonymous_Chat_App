@@ -1,14 +1,19 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import GettingStarted from './src/screens/GettingStarted'
-import Login from './src/screens/Auth/Login'
-import Signup from './src/screens/Auth/Signup'
+import { NavigationContainer } from '@react-navigation/native'
+import AuthNavigation from './src/navigations/AuthNavigation'
+import ForgotPassword from './src/screens/Auth/ForgotPassword'
+import OTP from './src/screens/Auth/OTP'
+
 
 const App = () => {
   return (
-    <View style={styles.container}>
-      <Login />
-    </View>
+    <NavigationContainer>
+      <AuthNavigation />
+    </NavigationContainer>
+    // <View style={styles.container}>
+    //   <OTP />
+    // </View>
   )
 }
 
