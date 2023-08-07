@@ -5,16 +5,20 @@ import AuthNavigation from './src/navigations/AuthNavigation'
 import ForgotPassword from './src/screens/Auth/ForgotPassword'
 import OTP from './src/screens/Auth/OTP'
 import Home from './src/screens/main/Home'
+import HomeNavigation from './src/navigations/HomeNavigation'
+import FloatingButton from './src/components/FloatingButton'
 
 
 const App = () => {
   return (
-    // <NavigationContainer>
-    //   <AuthNavigation />
-    // </NavigationContainer>
-    <View style={styles.container}>
-      <Home />
-    </View>
+    <NavigationContainer>
+      <FloatingButton />
+      <HomeNavigation />
+      {/* <AuthNavigation /> */}
+    </NavigationContainer>
+    // <View style={styles.container}>
+    //   <Home />
+    // </View>
   )
 }
 

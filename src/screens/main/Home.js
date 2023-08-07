@@ -1,14 +1,27 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native'
-import React from 'react'
+import { FlatList, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions, Animated } from 'react-native'
+import React, { useRef, useState } from 'react'
 import Background from '../../components/Background'
 import Card from '../../components/Card'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 
 const Home = () => {
 
     const { width, height } = useWindowDimensions();
-    console.log(width/2)
+
+
+    const animation = useRef(new Animated.Value(0)).current;
+    const [isButtonClicked, setIsButtonClicked] = useState(false);
+
+    const toggleButton = () => {
+        let toValue = isButtonClicked ? 0 : 1;
+        Animated.spring(animation, {
+            friction: 5,
+            toValue,
+            useNativeDriver: true,
+        }).start();
+        setIsButtonClicked(!isButtonClicked);
+    }
+
 
     const list = [
         {
@@ -44,24 +57,26 @@ const Home = () => {
             height: '100%',
         },
         floatingButton: {
-            width: 60,
-            height: 60,
-            backgroundColor: '#1B1B1B',
-            borderRadius: 30,
             position: 'absolute',
             bottom: 10,
-            left: '50%',
-            transform: [{ translateX: -30 }],
+            left: '42%',
+            backgroundColor: '#1B1B1B',
+            borderRadius: 30,
+            overflow: 'hidden'
+        },
+        floatingChildButton: {
+            width: 60,
+            height: 60,
+            borderRadius: 30,
             justifyContent: 'center',
             alignItems: 'center',
-
         }
     })
 
     return (
         <Background>
             <FlatList
-                contentContainerStyle={{paddingBottom: 50}}
+                contentContainerStyle={{ paddingBottom: 50 }}
                 style={styles.list}
                 data={list}
                 keyExtractor={(item) => item.id.toString()}
@@ -71,10 +86,6 @@ const Home = () => {
                     )
                 }}
             />
-            <TouchableOpacity style={styles.floatingButton}>
-                <MaterialCommunityIcons name='plus' size={40} color='#fff' />
-
-            </TouchableOpacity>
         </Background>
     )
 }

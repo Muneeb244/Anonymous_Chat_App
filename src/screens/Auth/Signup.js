@@ -6,9 +6,10 @@ import FormButton from '../../components/FormButton'
 import GoogleC from '../../components/GoogleC'
 import ErrorMessage from '../../components/ErrorMessage';
 import { Formik } from "formik";
-// import { loginSchema } from '../../utils/yupSchemas';
 import * as yup from 'yup';
+// import { loginSchema } from '../../utils/yupSchemas';
 import Geolocation from 'react-native-geolocation-service';
+
 
 const Signup = ({navigation}) => {
 
@@ -36,7 +37,6 @@ const Signup = ({navigation}) => {
                 getLocation();
             } else {
                 alert('Please allow location permission');
-                // requestLocationPermission();
                 navigation.replace('started')
             }
         } catch (err) {
@@ -60,8 +60,8 @@ const Signup = ({navigation}) => {
     }
 
     const temp = (values) => {
-        values.coordinates = coordinates;
-        console.log(values),
+        values.emoji = randomEmoji();
+        console.log(values)
         navigation.navigate('otp')
     }
 
@@ -123,6 +123,7 @@ const Signup = ({navigation}) => {
                                 onChangeText={handleChange('password')}
                                 onBlur={handleBlur('password')}
                                 value={values.password}
+                                secureTextEntry={true}
                             />
                         </View>
                         <ErrorMessage
@@ -198,17 +199,6 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         marginTop: 20,
-    },
-    input: {
-        width: '80%',
-        height: 50,
-        backgroundColor: '#fff',
-        borderColor: '#fff',
-        borderWidth: 1,
-        borderRadius: 40,
-        padding: 10,
-        color: '#000',
-        paddingLeft: 15,
     },
     label: {
         width: '80%',
