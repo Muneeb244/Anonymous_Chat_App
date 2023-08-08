@@ -7,6 +7,7 @@ import OTP from './src/screens/Auth/OTP'
 import Home from './src/screens/main/Home'
 import HomeNavigation from './src/navigations/HomeNavigation'
 import FloatingButton from './src/components/FloatingButton'
+import BottomSheet from './src/components/BottomSheet'
 
 
 const App = () => {
@@ -17,7 +18,7 @@ const App = () => {
       {/* <AuthNavigation /> */}
     </NavigationContainer>
     // <View style={styles.container}>
-    //   <Home />
+    //   <BottomSheet />
     // </View>
   )
 }

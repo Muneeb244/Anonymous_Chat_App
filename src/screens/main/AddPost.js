@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, PermissionsAndroid, Image, KeyboardAvoidingView, TextInput } from 'react-native'
+import { StyleSheet, Text, View, PermissionsAndroid, Image, KeyboardAvoidingView, TextInput, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Background from '../../components/Background';
 import Geolocation from 'react-native-geolocation-service';
@@ -8,10 +8,15 @@ import ErrorMessage from '../../components/ErrorMessage';
 import FormButton from '../../components/FormButton';
 import ImagePicker from 'react-native-image-crop-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import BottomSheet from '../../components/BottomSheet';
+import Entypo from 'react-native-vector-icons/Entypo';
+import mime from 'mime';
 
 const AddPost = ({ navigation }) => {
 
   const [coordinates, setCoordinates] = useState({});
+  const [modalVisible, setModalVisible] = useState(false);
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     requestLocationPermission();
@@ -57,50 +62,78 @@ const AddPost = ({ navigation }) => {
   }
 
   const TakePhotoFromCamera = () => {
-    // setLoader(true)
     try {
       ImagePicker.openCamera({
-        width: 400,
+        width: 300,
         height: 300,
         cropping: true,
         compressImageQuality: 0.7,
       }).then(imageG => {
-        // setImage(imageG)
-        // setModalVisible(!modalVisible)
-        console.log(imageG)
-      });
+        setModalVisible(false)
+        setImage(imageG)
+      })
+        .catch(er => {
+          if (er.code === 'E_PICKER_CANCELLED') {
+            return false;
+          }
+        })
     } catch (error) {
-      alert("Error uploading image")
+      if (error.code === 'E_PICKER_CANCELLED') {
+        return false;
+      }
       console.log("Error from TakePhotoFromCamera", error);
     }
   }
 
   const ChoosePhotoFromGallery = () => {
-    // setLoader(true)
     try {
       ImagePicker.openPicker({
-        width: 400,
-        height: 400,
+        width: 300,
+        height: 300,
         cropping: true,
         compressImageQuality: 0.7,
         mediaType: 'photo',
       }).then(imageG => {
-        console.log(imageG)
-        // setModalVisible(!modalVisible)
-        // setImage(imageG)
-        // uploadImage(imageG);
-      });
+        setModalVisible(false)
+        setImage(imageG)
+      })
+        .catch(er => {
+          if (er.code === 'E_PICKER_CANCELLED') return false
+        })
     } catch (error) {
-      alert("Error uploading image")
+      if (error.code === 'E_PICKER_CANCELLED') return false
       console.log("Error from ChoosePhotoFromGallery", error)
     }
   }
 
+  const cloudinaryUpload = async (filename) => {
+    const data = new FormData();
+    const newImageUri =  "file:///" + image.path.split("file:/").join("");
+    data.append('file', {
+      uri : newImageUri,
+      type: mime.getType(newImageUri),
+      name: newImageUri.split("/").pop()
+     });
+    data.append('upload_preset', 'dpivkpad3');
+    try {
+      let res = await fetch('https://api.cloudinary.com/v1_1/dpivkpad3/image/upload', {
+        method: 'POST',
+        body: data
+      })
+      res = await res.json();
+      return res.url;
+    } catch (error) {
+      // setLoading(false)
+      console.log("from cloudinary", error)
+    }
+  }
 
-  const temp = (values) => {
-    values.emoji = randomEmoji();
+
+  const temp = async (values) => {
+    // setLoading(true)
+    filename = image.path.split('/').pop();
+    values.imageURL = await cloudinaryUpload(filename)
     console.log(values)
-    // navigation.navigate('otp')
   }
 
   const postSchema = yup.object().shape({
@@ -119,57 +152,37 @@ const AddPost = ({ navigation }) => {
         validationSchema={postSchema}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
-          <KeyboardAvoidingView style={styles.form} >
+          <KeyboardAvoidingView >
+
             <View style={styles.parent}>
-              <Text style={styles.label}>write post</Text>
               <View style={styles.child}>
-                <TextInput
-                  keyboardType='default'
-                  style={styles.input}
-                  placeholder='post'
-                  onChangeText={handleChange('post')}
-                  onBlur={handleBlur('post')}
-                  value={values.post}
-                />
-                <MaterialCommunityIcons name='camera-plus-outline' size={40} color='#fff' style={styles.icon} />
+                <View style={styles.inputParent}>
+                  <TextInput
+                    keyboardType='default'
+                    style={styles.input}
+                    placeholder="What's on your mind?"
+                    onChangeText={handleChange('post')}
+                    onBlur={handleBlur('post')}
+                    value={values.post}
+                    placeholderTextColor='#fff'
+                    multiline={true}
+                  />
+                  <TouchableOpacity onPress={() => setModalVisible(prev => !prev)}>
+                    <MaterialCommunityIcons name='camera-plus' size={30} color='#fff' style={styles.icon} />
+                  </TouchableOpacity>
+                </View>
+                {image && <View style={styles.imageParent}>
+                  <Entypo name='cross' color="#313131" size={30} style={styles.imageIcon} onPress={() => setImage(null)} />
+                  <Image source={{ uri: image ? image.path : null }} style={styles.postImage} />
+                </View>}
               </View>
             </View>
             <ErrorMessage
               error={errors["post"]}
               visible={touched["post"]}
             />
-            {/* <View style={styles.parent}>
-              <Text style={styles.label}>Your email address</Text>
-              <TextInput
-                keyboardType='email-address'
-                style={styles.input}
-                placeholder='anonymous@email.com'
-                onChangeText={handleChange('email')}
-                onBlur={handleBlur('email')}
-                value={values.email}
-              />
-            </View>
-            <ErrorMessage
-              error={errors["email"]}
-              visible={touched["email"]}
-            /> */}
-            {/* <View style={styles.parent}>
-              <Text style={styles.label}>Your password</Text>
-              <TextInput
-                keyboardType='default'
-                style={styles.input}
-                placeholder='min 6 characters'
-                onChangeText={handleChange('password')}
-                onBlur={handleBlur('password')}
-                value={values.password}
-                secureTextEntry={true}
-              />
-            </View>
-            <ErrorMessage
-              error={errors["password"]}
-              visible={touched["password"]}
-            /> */}
             <FormButton text="post" onSubmit={handleSubmit} />
+            <BottomSheet modalVisible={modalVisible} setModalVisible={setModalVisible} gallery={ChoosePhotoFromGallery} camera={TakePhotoFromCamera} />
           </KeyboardAvoidingView>
 
         )}
@@ -182,7 +195,7 @@ export default AddPost
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 50,
+    marginTop: 30,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -197,44 +210,36 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
   },
-  or: {
+  inputParent: {
+    width: '100%',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    marginTop: 30,
-  },
-  line: {
-    width: '30%',
-    height: 1,
-    backgroundColor: '#fff',
-  },
-  orText: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginHorizontal: 10,
   },
   input: {
-    width: '70%',
-    height: 50,
+    width: '90%',
+    height: 80,
     backgroundColor: '#fff',
-    borderColor: '#fff',
-    borderWidth: 1,
+    // borderColor: '#fff',
+    // borderWidth: 1,
     borderRadius: 40,
     padding: 10,
-    color: '#000',
+    color: '#fff',
     paddingLeft: 15,
+    backgroundColor: '#1B1B1B',
   },
   parent: {
     width: '100%',
     marginTop: 20,
-    backgroundColor: 'red',
     alignItems: 'center'
   },
   child: {
     width: '80%',
-    flexDirection: 'row',
-    backgroundColor: 'green',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#1B1B1B',
+    padding: 10,
+    borderRadius: 10,
   },
   label: {
     width: '80%',
@@ -242,9 +247,28 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 0,
   },
   icon: {
-
+    // backgroundColor: '#C6F896',
+    borderRadius: 50,
+    padding: 10,
+  },
+  postImage: {
+    width: 250,
+    height: 250,
+    resizeMode: 'contain',
+    marginVertical: 10,
+    padding: 10,
+  },
+  postImageParent: {
+    width: '100%',
+    backgroundColor: '#1B1B1B',
+  },
+  imageIcon: {
+    position: 'absolute',
+    top: 10,
+    right: 0,
+    zIndex: 1,
   }
 })

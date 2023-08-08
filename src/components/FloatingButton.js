@@ -80,17 +80,26 @@ const FloatingButton = () => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={[styles.floatingButton, styleThree]} onPress={() => navigation.navigate('profile')}>
+            <TouchableOpacity style={[styles.floatingButton, styleThree]} onPress={() => {
+                toggleButton()
+                navigation.navigate('profile')
+            }}>
                 <Animated.View style={styles.floatingChildButton} >
                     <MaterialCommunityIcons name='face-man-profile' size={40} color='#fff' />
                 </Animated.View>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.floatingButton, styleOne]} onPress={() => navigation.navigate('post')}>
+            <TouchableOpacity style={[styles.floatingButton, styleOne]} onPress={() => {
+                toggleButton()
+                navigation.navigate('post')
+            }}>
                 <Animated.View style={styles.floatingChildButton} >
                     <MaterialCommunityIcons name='plus' size={40} color='#fff' />
                 </Animated.View>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.floatingButton, styleTwo]} onPress={() => navigation.navigate('home')}>
+            <TouchableOpacity style={[styles.floatingButton, styleTwo]} onPress={() => {
+                toggleButton()
+                navigation.navigate('home')
+            }}>
                 <Animated.View style={styles.floatingChildButton} >
                     <MaterialCommunityIcons name='home' size={40} color='#fff' />
                 </Animated.View>
@@ -112,14 +121,12 @@ const styles = StyleSheet.create({
         bottom: 0,
         zIndex: 1,
         width: '100%',
-        // height: '5%',
         backgroundColor: 'red'
     },
     floatingButton: {
         position: 'absolute',
         bottom: 10,
         left: '42%',
-        // transform: [{ translateX: -30 }],
         backgroundColor: '#1B1B1B',
         borderRadius: 30,
         overflow: 'hidden'
@@ -127,7 +134,6 @@ const styles = StyleSheet.create({
     floatingChildButton: {
         width: 60,
         height: 60,
-        // backgroundColor: 'red',
         borderRadius: 30,
         justifyContent: 'center',
         alignItems: 'center',

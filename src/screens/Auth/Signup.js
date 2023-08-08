@@ -1,7 +1,6 @@
 import { Image, StyleSheet, Text, View, TextInput, KeyboardAvoidingView, PermissionsAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react';
 import Background from '../../components/Background'
-import Input from '../../components/Input'
 import FormButton from '../../components/FormButton'
 import GoogleC from '../../components/GoogleC'
 import ErrorMessage from '../../components/ErrorMessage';
