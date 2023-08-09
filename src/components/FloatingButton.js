@@ -1,9 +1,18 @@
-import { Animated, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Animated, StyleSheet, TouchableOpacity, View } from 'react-native'
 import React, { useRef, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { useKeyboard } from '../context/KeyboardContext';
 
-const FloatingButton = () => {
+const FloatingButton = ({}) => {
+
+    const { keyboardVisible } = useKeyboard();
+    console.log(keyboardVisible)
+
+  if (keyboardVisible) {
+    console.log("kuch toh hua hai")
+    return null;
+  }
 
     const navigation = useNavigation();
 
@@ -77,6 +86,12 @@ const FloatingButton = () => {
             }
         ]
     }
+
+    // const { keyboardVisible } = route.params;
+
+    // if (keyboardVisible) {
+    //     return null;
+    // }
 
     return (
         <View style={styles.container}>

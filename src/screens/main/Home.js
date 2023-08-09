@@ -1,26 +1,10 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions, Animated } from 'react-native'
+import { FlatList, StyleSheet, Text, TouchableOpacity, View  } from 'react-native'
 import React, { useRef, useState } from 'react'
 import Background from '../../components/Background'
 import Card from '../../components/Card'
 
 
 const Home = () => {
-
-    const { width, height } = useWindowDimensions();
-
-
-    const animation = useRef(new Animated.Value(0)).current;
-    const [isButtonClicked, setIsButtonClicked] = useState(false);
-
-    const toggleButton = () => {
-        let toValue = isButtonClicked ? 0 : 1;
-        Animated.spring(animation, {
-            friction: 5,
-            toValue,
-            useNativeDriver: true,
-        }).start();
-        setIsButtonClicked(!isButtonClicked);
-    }
 
 
     const list = [

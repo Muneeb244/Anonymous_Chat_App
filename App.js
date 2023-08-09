@@ -8,15 +8,18 @@ import Home from './src/screens/main/Home'
 import HomeNavigation from './src/navigations/HomeNavigation'
 import FloatingButton from './src/components/FloatingButton'
 import BottomSheet from './src/components/BottomSheet'
+import { KeyboardProvider } from './src/context/KeyboardContext';
 
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <FloatingButton />
-      <HomeNavigation />
-      {/* <AuthNavigation /> */}
-    </NavigationContainer>
+    <KeyboardProvider>
+      <NavigationContainer>
+        <FloatingButton />
+        <HomeNavigation />
+        {/* <AuthNavigation /> */}
+      </NavigationContainer>
+    </KeyboardProvider>
     // <View style={styles.container}>
     //   <BottomSheet />
     // </View>

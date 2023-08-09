@@ -1,21 +1,30 @@
-import { StyleSheet, Text, View, ImageBackground } from 'react-native'
+import { StyleSheet, Text, View, ImageBackground, useWindowDimensions, ScrollView, StatusBar } from 'react-native'
 import React from 'react'
 
 const Background = ({ children }) => {
+
+    let { width, height } = useWindowDimensions();
+    height += StatusBar.currentHeight;
+
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            justifyContent: 'flex-start', // Adjust as needed
+            alignItems: 'center',
+
+        },
+        image: {
+            width: width,
+            height: height,
+        }
+    })
     return (
-        <ImageBackground source={require('../assets/background.png')} resizeMode='cover' style={styles.image} blurRadius={100} >
-            {children}
-        </ImageBackground>
+        <View style={styles.container}>
+            <ImageBackground source={require('../assets/background.png')} resizeMode='cover' style={styles.image} blurRadius={100} >
+                    {children}
+            </ImageBackground>
+        </View>
     )
 }
 
 export default Background
-
-const styles = StyleSheet.create({
-    image: {
-        // width: '100%',
-        // height: '100%',
-        flex: 1,
-        justifyContent: 'flex-start',
-    }
-})
