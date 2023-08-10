@@ -10,12 +10,10 @@ const Profile = () => {
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-      console.log("keyboard visible")
       setKeyboardVisible(true);
     });
 
     const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-      console.log("bnd hogaya")
       setKeyboardVisible(false);
     });
 
@@ -71,7 +69,7 @@ const Profile = () => {
             keyboardType='default'
             style={styles.input}
             placeholder='cool username'
-            value={"@" + username}
+            value={username}
             onChangeText={(text) => setUsername(text.slice(1))}
           />
           <TextInput

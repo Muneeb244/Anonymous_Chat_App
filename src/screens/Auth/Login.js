@@ -13,8 +13,7 @@ const Login = ({navigation}) => {
 
 
     const temp = (values) => {
-        console.log(values)
-        navigation.navigate('home')
+        navigation.navigate('homenavigation')
     }
 
     const loginSchema = yup.object().shape({
@@ -59,6 +58,7 @@ const Login = ({navigation}) => {
                                 onChangeText={handleChange('password')}
                                 onBlur={handleBlur('password')}
                                 value={values.password}
+                                secureTextEntry
                             />
                         </View>
                         <ErrorMessage

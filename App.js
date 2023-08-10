@@ -15,9 +15,9 @@ const App = () => {
   return (
     <KeyboardProvider>
       <NavigationContainer>
-        <FloatingButton />
-        <HomeNavigation />
-        {/* <AuthNavigation /> */}
+        {/* <FloatingButton />
+        <HomeNavigation /> */}
+        <AuthNavigation />
       </NavigationContainer>
     </KeyboardProvider>
     // <View style={styles.container}>

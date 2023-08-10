@@ -1,18 +1,29 @@
 import { Animated, StyleSheet, TouchableOpacity, View } from 'react-native'
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useKeyboard } from '../context/KeyboardContext';
 
 const FloatingButton = ({}) => {
+    const translateY = useRef(new Animated.Value(0)).current;
+
+    const startAnimation = () => {
+        Animated.timing(translateY, {
+          toValue: 100,
+          duration: 400,
+          useNativeDriver: true,
+        }).start();
+      };
+
+      const endAnimation = () => {
+        Animated.timing(translateY, {
+            toValue: 0,
+            duration: 400,
+            useNativeDriver: true,
+          }).start();
+      }
 
     const { keyboardVisible } = useKeyboard();
-    console.log(keyboardVisible)
-
-  if (keyboardVisible) {
-    console.log("kuch toh hua hai")
-    return null;
-  }
 
     const navigation = useNavigation();
 
@@ -87,14 +98,14 @@ const FloatingButton = ({}) => {
         ]
     }
 
-    // const { keyboardVisible } = route.params;
 
-    // if (keyboardVisible) {
-    //     return null;
-    // }
+    if (keyboardVisible) {
+        startAnimation();
+    }
+    else endAnimation();
 
     return (
-        <View style={styles.container}>
+        <Animated.View style={[styles.container, { transform: [{ translateY }]}]}>
             <TouchableOpacity style={[styles.floatingButton, styleThree]} onPress={() => {
                 toggleButton()
                 navigation.navigate('profile')
@@ -124,7 +135,7 @@ const FloatingButton = ({}) => {
                     <MaterialCommunityIcons name='plus' size={40} color='#fff' />
                 </Animated.View>
             </TouchableOpacity>
-        </View>
+        </Animated.View>
     )
 }
 
@@ -136,7 +147,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         zIndex: 1,
         width: '100%',
-        backgroundColor: 'red'
+        
     },
     floatingButton: {
         position: 'absolute',
@@ -144,7 +155,7 @@ const styles = StyleSheet.create({
         left: '42%',
         backgroundColor: '#1B1B1B',
         borderRadius: 30,
-        overflow: 'hidden'
+        overflow: 'hidden',
     },
     floatingChildButton: {
         width: 60,

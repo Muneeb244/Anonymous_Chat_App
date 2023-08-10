@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, PermissionsAndroid, Image, KeyboardAvoidingView, TextInput, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, PermissionsAndroid, Image, KeyboardAvoidingView, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Background from '../../components/Background';
 import Geolocation from 'react-native-geolocation-service';
@@ -11,6 +11,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import BottomSheet from '../../components/BottomSheet';
 import Entypo from 'react-native-vector-icons/Entypo';
 import mime from 'mime';
+import { useKeyboard } from '../../context/KeyboardContext';
 
 const AddPost = ({ navigation }) => {
 
@@ -18,8 +19,23 @@ const AddPost = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
 
+  const { setKeyboardVisible } = useKeyboard();
+
   useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true);
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+    });
+
     requestLocationPermission();
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
   }, [])
 
   const requestLocationPermission = async () => {
@@ -108,12 +124,12 @@ const AddPost = ({ navigation }) => {
 
   const cloudinaryUpload = async (filename) => {
     const data = new FormData();
-    const newImageUri =  "file:///" + image.path.split("file:/").join("");
+    const newImageUri = "file:///" + image.path.split("file:/").join("");
     data.append('file', {
-      uri : newImageUri,
+      uri: newImageUri,
       type: mime.getType(newImageUri),
       name: newImageUri.split("/").pop()
-     });
+    });
     data.append('upload_preset', 'dpivkpad3');
     try {
       let res = await fetch('https://api.cloudinary.com/v1_1/dpivkpad3/image/upload', {
@@ -141,53 +157,55 @@ const AddPost = ({ navigation }) => {
   });
 
   return (
-    <Background>
-      <View style={styles.header}>
-        <Text style={styles.heading}>Add post</Text>
-        <Image source={require('../../assets/bomb.png')} style={styles.image} />
-      </View>
-      <Formik
-        initialValues={{ post: "" }}
-        onSubmit={temp}
-        validationSchema={postSchema}
-      >
-        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
-          <KeyboardAvoidingView >
+    <ScrollView>
+      <Background>
+        <View style={styles.header}>
+          <Text style={styles.heading}>Add post</Text>
+          <Image source={require('../../assets/bomb.png')} style={styles.image} />
+        </View>
+        <Formik
+          initialValues={{ post: "" }}
+          onSubmit={temp}
+          validationSchema={postSchema}
+        >
+          {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+            <KeyboardAvoidingView >
 
-            <View style={styles.parent}>
-              <View style={styles.child}>
-                <View style={styles.inputParent}>
-                  <TextInput
-                    keyboardType='default'
-                    style={styles.input}
-                    placeholder="What's on your mind?"
-                    onChangeText={handleChange('post')}
-                    onBlur={handleBlur('post')}
-                    value={values.post}
-                    placeholderTextColor='#fff'
-                    multiline={true}
-                  />
-                  <TouchableOpacity onPress={() => setModalVisible(prev => !prev)}>
-                    <MaterialCommunityIcons name='camera-plus' size={30} color='#fff' style={styles.icon} />
-                  </TouchableOpacity>
+              <View style={styles.parent}>
+                <View style={styles.child}>
+                  <View style={styles.inputParent}>
+                    <TextInput
+                      keyboardType='default'
+                      style={styles.input}
+                      placeholder="What's on your mind?"
+                      onChangeText={handleChange('post')}
+                      onBlur={handleBlur('post')}
+                      value={values.post}
+                      placeholderTextColor='#fff'
+                      multiline={true}
+                    />
+                    <TouchableOpacity onPress={() => setModalVisible(prev => !prev)}>
+                      <MaterialCommunityIcons name='camera-plus' size={30} color='#fff' style={styles.icon} />
+                    </TouchableOpacity>
+                  </View>
+                  {image && <View style={styles.imageParent}>
+                    <Entypo name='cross' color="#313131" size={30} style={styles.imageIcon} onPress={() => setImage(null)} />
+                    <Image source={{ uri: image ? image.path : null }} style={styles.postImage} />
+                  </View>}
                 </View>
-                {image && <View style={styles.imageParent}>
-                  <Entypo name='cross' color="#313131" size={30} style={styles.imageIcon} onPress={() => setImage(null)} />
-                  <Image source={{ uri: image ? image.path : null }} style={styles.postImage} />
-                </View>}
               </View>
-            </View>
-            <ErrorMessage
-              error={errors["post"]}
-              visible={touched["post"]}
-            />
-            <FormButton text="post" onSubmit={handleSubmit} />
-            <BottomSheet modalVisible={modalVisible} setModalVisible={setModalVisible} gallery={ChoosePhotoFromGallery} camera={TakePhotoFromCamera} />
-          </KeyboardAvoidingView>
+              <ErrorMessage
+                error={errors["post"]}
+                visible={touched["post"]}
+              />
+              <FormButton text="post" onSubmit={handleSubmit} />
+              <BottomSheet modalVisible={modalVisible} setModalVisible={setModalVisible} gallery={ChoosePhotoFromGallery} camera={TakePhotoFromCamera} />
+            </KeyboardAvoidingView>
 
-        )}
-      </Formik>
-    </Background>
+          )}
+        </Formik>
+      </Background>
+    </ScrollView>
   )
 }
 
