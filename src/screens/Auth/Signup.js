@@ -6,13 +6,15 @@ import GoogleC from '../../components/GoogleC'
 import ErrorMessage from '../../components/ErrorMessage';
 import { Formik } from "formik";
 import * as yup from 'yup';
-// import { loginSchema } from '../../utils/yupSchemas';
 import Geolocation from 'react-native-geolocation-service';
+import {verifyUser} from '../../redux/Reducers/authSlice'
+import {useDispatch} from 'react-redux'
 
 
 const Signup = ({navigation}) => {
 
     const [coordinates, setCoordinates] = useState({});
+    const dispatch = useDispatch();
 
 
     useEffect(() => {
