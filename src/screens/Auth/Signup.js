@@ -8,65 +8,30 @@ import { Formik } from "formik";
 import * as yup from 'yup';
 import Geolocation from 'react-native-geolocation-service';
 import {verifyUser} from '../../redux/Reducers/authSlice'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
+import randomEmoji from '../../utils/randomEmoji';
 
 
 const Signup = ({navigation}) => {
 
     const [coordinates, setCoordinates] = useState({});
     const dispatch = useDispatch();
-
+    const {loading, verificationCode} = useSelector(state => state.user)
+    console.log(loading,verificationCode)
 
     useEffect(() => {
-        requestLocationPermission();
     }, [])
 
-    const requestLocationPermission = async () => {
-        try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                {
-                    title: 'Dadaboom Location Permission',
-                    message:
-                        'Dadaboom needs access to your location ',
-                    buttonNeutral: 'Ask Me Later',
-                    buttonNegative: 'Cancel',
-                    buttonPositive: 'OK',
-                },
-            );
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                getLocation();
-            } else {
-                alert('Please allow location permission');
-                navigation.replace('started')
-            }
-        } catch (err) {
-            console.warn(err);
-        }
-    };
-
-    const getLocation = () => {
-        Geolocation.getCurrentPosition(
-            (position) => {
-                setCoordinates({
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                })
-            },
-            (error) => {
-                console.log(error.code, error.message);
-            },
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-        );
-    }
 
     const temp = (values) => {
         values.emoji = randomEmoji();
-        console.log(values)
-        navigation.navigate('otp')
+        dispatch(verifyUser(values))
+        values.verificationCode = verificationCode;
+        navigation.navigate('otp', {user: values})
     }
 
     const signupSchema = yup.object().shape({
+        username: yup.string().required().min(2).label("username"),
         name: yup.string().required().min(2).label("name"),
         email: yup.string().email().required().label("Email"),
         password: yup.string().required().min(6).max(12).label("Password"),
@@ -79,18 +44,33 @@ const Signup = ({navigation}) => {
                 <Image source={require('../../assets/bomb.png')} style={styles.image} />
             </View>
             <Formik
-                initialValues={{name: "", email: "", password: "" }}
+                initialValues={{username: "", name: "", email: "", password: "" }}
                 onSubmit={temp}
                 validationSchema={signupSchema}
             >
                 {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
                     <KeyboardAvoidingView style={styles.form} >
                         <View style={styles.parent}>
+                            <Text style={styles.label}>Your cool username</Text>
+                            <TextInput
+                                keyboardType='default'
+                                style={styles.input}
+                                placeholder='username'
+                                onChangeText={handleChange('username')}
+                                onBlur={handleBlur('username')}
+                                value={values.username}
+                            />
+                        </View>
+                        <ErrorMessage
+                            error={errors["username"]}
+                            visible={touched["username"]}
+                        />
+                        <View style={styles.parent}>
                             <Text style={styles.label}>Your name</Text>
                             <TextInput
                                 keyboardType='default'
                                 style={styles.input}
-                                placeholder='name'
+                                placeholder='username'
                                 onChangeText={handleChange('name')}
                                 onBlur={handleBlur('name')}
                                 value={values.name}
@@ -199,7 +179,7 @@ const styles = StyleSheet.create({
     parent: {
         width: '100%',
         alignItems: 'center',
-        marginTop: 20,
+        marginTop: 10,
     },
     label: {
         width: '80%',
@@ -207,7 +187,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: 5,
     },
     form: {
         justifyContent: 'center',

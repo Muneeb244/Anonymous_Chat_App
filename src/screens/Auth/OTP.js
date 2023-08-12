@@ -7,7 +7,7 @@ import { Formik } from "formik";
 import * as yup from 'yup';
 import FormButton from '../../components/FormButton';
 
-const OTP = () => {
+const OTP = ({route}) => {
 
     const optRef1 = useRef();
     const optRef2 = useRef();
@@ -15,10 +15,11 @@ const OTP = () => {
     const optRef4 = useRef();
     const [count, setCount] = useState(0);
     const[resend, setResend] = useState(false);
+    const {values} = route.params;
+    console.log(values)
 
 
     useEffect(() => {
-        // showToastWithGravity()
         const interval = setInterval(() => {
             if (count <= 0) {
                 // setResend(false);
@@ -45,7 +46,6 @@ const OTP = () => {
         setCount(60);
         setResend(true);
         console.log(values)
-
     }
 
     const otpSchema = yup.object().shape({
@@ -128,7 +128,6 @@ const OTP = () => {
                                         optRef3.current.focus();
                                     };
                                 }}
-                                // onBlur={handleBlur('otp4')}
                                 value={values.otp4}
                                 ref={optRef4}
                                 maxLength={1}

@@ -9,17 +9,21 @@ import HomeNavigation from './src/navigations/HomeNavigation'
 import FloatingButton from './src/components/FloatingButton'
 import BottomSheet from './src/components/BottomSheet'
 import { KeyboardProvider } from './src/context/KeyboardContext';
+import { Provider } from 'react-redux';
+import { store } from './src/redux/store/store'
 
 
 const App = () => {
   return (
-    <KeyboardProvider>
-      <NavigationContainer>
-        {/* <FloatingButton />
+    <Provider store={store}>
+      <KeyboardProvider>
+        <NavigationContainer>
+          {/* <FloatingButton />
         <HomeNavigation /> */}
-        <AuthNavigation />
-      </NavigationContainer>
-    </KeyboardProvider>
+          <AuthNavigation />
+        </NavigationContainer>
+      </KeyboardProvider>
+    </Provider>
     // <View style={styles.container}>
     //   <BottomSheet />
     // </View>

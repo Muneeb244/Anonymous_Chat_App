@@ -4,7 +4,8 @@ import Axios from 'axios';
 const initialState = {
     token: "",
     loading: false,
-    error: null
+    error: null,
+    verificationCode: "",
 }
 
 const authSlice = createSlice({
@@ -12,13 +13,15 @@ const authSlice = createSlice({
     initialState,
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(signupUser.pending, (state, action) => state.loading = true),
-            builder.addCase(signupUser.fulfilled, (state, action) => {
+        builder.addCase(verifyUser.pending, (state, action) => {state.loading = true}),
+            builder.addCase(verifyUser.fulfilled, (state, action) => {
                 state.loading = false;
-                state.token = action.payload.data.token;
+                console.log("from fullfilled of verify user",action.payload.data)
+                state.verificationCode = action.payload.data.verificationCode;
             }),
-            builder.addCase(signupUser.rejected, (state, action) => {
+            builder.addCase(verifyUser.rejected, (state, action) => {
                 state.loading = false;
+                console.log("from error of verify user",action.error)
                 state.error = action.error.message;
             })
 
@@ -26,8 +29,18 @@ const authSlice = createSlice({
 })
 
 export const verifyUser = createAsyncThunk('verifyuser', async (body) => {
-    const respose = Axios.post('http://localhost:5000/user/verify', body);
+    const respose = Axios.post('http://192.168.18.56:5000/user/verify', body);
     return respose;
+    // const response = await fetch('http://192.168.18.56:5000/user/verify', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify(body)
+    // })
+    // const data = await response.json();
+    // console.log("from verify user",data)
+    // return data;
 })
 export const signupUser = createAsyncThunk('signupuser', async (body) => {
     const respose = Axios.post('http://localhost:5000/user/signup', body);
