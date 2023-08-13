@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-function ErrorMessage({ error, visible }) {
+function ErrorMessage({ error, visible, otp }) {
     if (!visible || !error) return null;
     return (
 
         <View style={styles.parent}>
-            <Text style={styles.error}>{error}</Text>
+            <Text style={[styles.error, {textAlign: otp ? 'center': "left"}]}>{error}</Text>
         </View>
     );
 }

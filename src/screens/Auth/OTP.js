@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, ToastAndroid, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, ToastAndroid } from 'react-native'
 import React, { useEffect, useRef } from 'react'
 import Background from '../../components/Background'
 import ErrorMessage from '../../components/ErrorMessage'
@@ -6,17 +6,22 @@ import { useState } from 'react';
 import { Formik } from "formik";
 import * as yup from 'yup';
 import FormButton from '../../components/FormButton';
+import { useDispatch, useSelector } from 'react-redux';
+import { verifyUser } from '../../redux/Reducers/authSlice'
 
-const OTP = ({route}) => {
+const OTP = ({ route }) => {
 
     const optRef1 = useRef();
     const optRef2 = useRef();
     const optRef3 = useRef();
     const optRef4 = useRef();
     const [count, setCount] = useState(0);
-    const[resend, setResend] = useState(false);
-    const {values} = route.params;
-    console.log(values)
+    const [resend, setResend] = useState(false);
+    const { user={"email": "muneeb@gmail.com", "emoji": "😲", "name": "Muneeb Ahmad", "password": "000000", "username": "muneeb"} } = route.params;
+    const { loading, error, verificationCode } = useSelector(state => state.user)
+
+    const dispatch = useDispatch();
+    // console.log("roter value from OTP",user,verificationCode)
 
 
     useEffect(() => {
@@ -26,27 +31,43 @@ const OTP = ({route}) => {
                 return clearInterval(interval);
             };
             setCount(count - 1)
-        }, 1000)
+        }, 100)
         return () => {
             clearInterval(interval);
         };
     }, [count])
 
+    if (error) alert(error)
+    // console.log(verificationCode)
+
     const showToastWithGravity = () => {
         ToastAndroid.showWithGravity(
-            'An OTP has been sent to your email address',
+            'An OTP has been resent to your email address',
             ToastAndroid.SHORT,
             ToastAndroid.BOTTOM,
         );
     };
 
+    // confirmOTP
+    const confirmOTP = (values) => {
+        if (count == 0) {
+            setCount(60);
+            setResend(true);
+        }
+        if (verificationCode == Object.values(values).join("")) return alert("OTP Verified")
+    }
 
 
-    const temp = (values) => {
+
+    const resendOTP = () => {
+        console.log("resend otp")
         setCount(60);
         setResend(true);
-        console.log(values)
+        dispatch(verifyUser(user))
+        showToastWithGravity()
     }
+
+    if(error) alert(error)
 
     const otpSchema = yup.object().shape({
         otp1: yup.number().typeError("OTP must be a number").required().label("OTP"),
@@ -63,7 +84,7 @@ const OTP = ({route}) => {
             <Text style={styles.heading} >OTP Verfication</Text>
             <Formik
                 initialValues={{ otp1: "", otp2: "", otp3: "", otp4: "" }}
-                onSubmit={temp}
+                onSubmit={confirmOTP}
                 validationSchema={otpSchema}
             >
                 {({ values, errors, touched, handleChange, setFieldValue, handleBlur, handleSubmit }) => (
@@ -74,7 +95,6 @@ const OTP = ({route}) => {
                                 keyboardType='numeric'
                                 style={[styles.input, { borderWidth: values.otp1 || errors["otp1"] ? 2 : 0, borderColor: errors["otp1"] ? 'red' : values.otp1 ? 'green' : '#fff' }]}
                                 onChangeText={txt => {
-                                    // handleChange('otp1')
                                     setFieldValue('otp1', txt)
                                     if (txt.length === 1) optRef2.current.focus();
                                 }}
@@ -87,7 +107,6 @@ const OTP = ({route}) => {
                                 keyboardType='numeric'
                                 style={[styles.input, { borderWidth: values.otp2 || errors["otp2"] ? 2 : 0, borderColor: errors["otp2"] ? 'red' : values.otp2 ? 'green' : '#fff' }]}
                                 onChangeText={txt => {
-                                    // handleChange('otp2')
                                     setFieldValue('otp2', txt)
                                     if (txt.length === 1) return optRef3.current.focus();
                                     if (txt.length < 1) return optRef1.current.focus();
@@ -95,7 +114,6 @@ const OTP = ({route}) => {
                                 onKeyPress={({ nativeEvent }) => {
                                     if (nativeEvent.key === 'Backspace') optRef1.current.focus();
                                 }}
-                                // onBlur={handleBlur('otp2')}
                                 value={values.otp2}
                                 ref={optRef2}
                                 maxLength={1}
@@ -136,12 +154,13 @@ const OTP = ({route}) => {
                         <ErrorMessage
                             error={errors["otp1"] || errors["otp2"] || errors["otp3"] || errors["otp4"]}
                             visible={errors["otp1"] || errors["otp2"] || errors["otp3"] || errors["otp4"]}
+                            otp={true}
                         />
                         {resend && <View style={styles.timer}>
-                            <TouchableOpacity onPress={count == 0 ? () => setCount(60) : () => {}}>
-                                <Text style={[styles.timerText, {color: count == 0 ? '#fff' : "#A9A9A9"}]}>Resend</Text>
+                            <TouchableOpacity onPress={count != 0 ? () => setCount(60) : () => resendOTP()}>
+                                <Text style={[styles.timerText, { color: count == 0 ? '#fff' : "#A9A9A9" }]}>Resend</Text>
                             </TouchableOpacity>
-                            <Text style={styles.timerCount}>{count!==0 ? count+" seconds" : ""}</Text>
+                            <Text style={styles.timerCount}>{count !== 0 ? count + " seconds" : ""}</Text>
                         </View>}
                         <FormButton text="Submit" onSubmit={handleSubmit} />
                     </KeyboardAvoidingView>

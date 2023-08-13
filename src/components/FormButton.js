@@ -1,10 +1,13 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native'
 import React from 'react'
 
-const FormButton = ({ text, onSubmit }) => {
+const FormButton = ({ text, onSubmit, loading }) => {
     return (
         <TouchableOpacity style={styles.btn} onPress={onSubmit}>
-            <Text style={styles.text}>{text}</Text>
+            {loading ?
+                <ActivityIndicator size="large" color="#000" />
+                :
+                <Text style={styles.text}>{text}</Text>}
         </TouchableOpacity >
     )
 }

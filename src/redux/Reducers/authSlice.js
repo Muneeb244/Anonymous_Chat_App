@@ -6,31 +6,37 @@ const initialState = {
     loading: false,
     error: null,
     verificationCode: "",
+    message: ""
 }
 
 const authSlice = createSlice({
     name: 'user',
     initialState,
-    reducers: {},
+    reducers: {
+        setErrorMessage: (state, action) => {
+            state.error = action.payload;
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(verifyUser.pending, (state, action) => {state.loading = true}),
             builder.addCase(verifyUser.fulfilled, (state, action) => {
                 state.loading = false;
-                console.log("from fullfilled of verify user",action.payload.data)
-                state.verificationCode = action.payload.data.verificationCode;
+                console.log("from verify user", action.payload)
+                state.verificationCode = action.payload.verificationCode;
+                state.message = action.payload.message;
             }),
             builder.addCase(verifyUser.rejected, (state, action) => {
                 state.loading = false;
-                console.log("from error of verify user",action.error)
-                state.error = action.error.message;
+                state.error = action.payload;
             })
 
     }
 })
 
-export const verifyUser = createAsyncThunk('verifyuser', async (body) => {
-    const respose = Axios.post('http://192.168.18.56:5000/user/verify', body);
-    return respose;
+export const verifyUser = createAsyncThunk('verifyuser', async (body, {rejectWithValue}) => {
+    return Axios.post('http://192.168.100.88:5000/user/verify', body)
+    .then((response) => response.data)
+    .catch((error) => rejectWithValue(error.response.data.error))
     // const response = await fetch('http://192.168.18.56:5000/user/verify', {
     //     method: 'POST',
     //     headers: {
@@ -52,3 +58,4 @@ export const signinUser = createAsyncThunk('signupuser', async (body) => {
 })
 
 export default authSlice.reducer;
+export const { setErrorMessage } = authSlice.actions;

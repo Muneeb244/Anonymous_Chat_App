@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View, TextInput, KeyboardAvoidingView, PermissionsAndroid } from 'react-native'
+import { Image, StyleSheet, Text, View, TextInput, KeyboardAvoidingView, ToastAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react';
 import Background from '../../components/Background'
 import FormButton from '../../components/FormButton'
@@ -7,27 +7,45 @@ import ErrorMessage from '../../components/ErrorMessage';
 import { Formik } from "formik";
 import * as yup from 'yup';
 import Geolocation from 'react-native-geolocation-service';
-import {verifyUser} from '../../redux/Reducers/authSlice'
-import {useDispatch, useSelector} from 'react-redux'
+import { verifyUser, setErrorMessage } from '../../redux/Reducers/authSlice'
+import { useDispatch, useSelector } from 'react-redux'
 import randomEmoji from '../../utils/randomEmoji';
 
 
-const Signup = ({navigation}) => {
+const Signup = ({ navigation }) => {
 
-    const [coordinates, setCoordinates] = useState({});
+    const [user, setUser] = useState()
     const dispatch = useDispatch();
-    const {loading, verificationCode} = useSelector(state => state.user)
-    console.log(loading,verificationCode)
+    const { loading, error, verificationCode } = useSelector(state => state.user)
+
+    const showToastWithGravity = () => {
+        ToastAndroid.showWithGravity(
+            'An OTP has been sent to your email address',
+            ToastAndroid.SHORT,
+            ToastAndroid.BOTTOM,
+        );
+    };
 
     useEffect(() => {
-    }, [])
+        if (error) {
+            console.log("signup error if")
+            dispatch(setErrorMessage(null))
+            alert(error)
+        }
+        if (verificationCode) {
+            showToastWithGravity()
+            navigation.navigate('otp', { user, verificationCode })
+        }
+    }, [error, verificationCode])
+
+
 
 
     const temp = (values) => {
         values.emoji = randomEmoji();
         dispatch(verifyUser(values))
-        values.verificationCode = verificationCode;
-        navigation.navigate('otp', {user: values})
+        setUser(values)
+        // navigation.navigate('otp', {user: values})
     }
 
     const signupSchema = yup.object().shape({
@@ -44,7 +62,7 @@ const Signup = ({navigation}) => {
                 <Image source={require('../../assets/bomb.png')} style={styles.image} />
             </View>
             <Formik
-                initialValues={{username: "", name: "", email: "", password: "" }}
+                initialValues={{ username: "", name: "", email: "", password: "" }}
                 onSubmit={temp}
                 validationSchema={signupSchema}
             >
@@ -70,7 +88,7 @@ const Signup = ({navigation}) => {
                             <TextInput
                                 keyboardType='default'
                                 style={styles.input}
-                                placeholder='username'
+                                placeholder='name'
                                 onChangeText={handleChange('name')}
                                 onBlur={handleBlur('name')}
                                 value={values.name}
@@ -111,7 +129,7 @@ const Signup = ({navigation}) => {
                             error={errors["password"]}
                             visible={touched["password"]}
                         />
-                        <FormButton text="continue" onSubmit={handleSubmit} />
+                        <FormButton text="continue" onSubmit={handleSubmit} loading={loading} />
                     </KeyboardAvoidingView>
 
                 )}
