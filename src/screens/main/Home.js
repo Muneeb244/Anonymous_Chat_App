@@ -2,9 +2,13 @@ import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native
 import React, { useRef, useState } from 'react'
 import Background from '../../components/Background'
 import Card from '../../components/Card'
+import { useSelector } from 'react-redux'
 
 
 const Home = () => {
+
+    const {verificationCode} = useSelector(state => state.user);
+    console.log(verificationCode)
 
 
     const list = [
@@ -48,7 +52,7 @@ const Home = () => {
     return (
         <Background>
             <FlatList
-                contentContainerStyle={{ paddingBottom: 60 }}
+                contentContainerStyle={{ paddingBottom: 70 }}
                 style={styles.list}
                 data={list}
                 keyExtractor={(item) => item.id.toString()}
@@ -68,7 +72,7 @@ export default Home
             list: {
                 flex: 1,
                 paddingTop: 10,
-                marginBottom: 60,
+                marginBottom: 70,
             },
             container: {
                 width: '100%',

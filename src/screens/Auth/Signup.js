@@ -28,7 +28,6 @@ const Signup = ({ navigation }) => {
 
     useEffect(() => {
         if (error) {
-            console.log("signup error if")
             dispatch(setErrorMessage(null))
             alert(error)
         }
@@ -43,9 +42,8 @@ const Signup = ({ navigation }) => {
 
     const temp = (values) => {
         values.emoji = randomEmoji();
+        setUser(values);
         dispatch(verifyUser(values))
-        setUser(values)
-        // navigation.navigate('otp', {user: values})
     }
 
     const signupSchema = yup.object().shape({

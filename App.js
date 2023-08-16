@@ -11,6 +11,7 @@ import BottomSheet from './src/components/BottomSheet'
 import { KeyboardProvider } from './src/context/KeyboardContext';
 import { Provider } from 'react-redux';
 import { store } from './src/redux/store/store'
+import ResetPassword from './src/screens/Auth/ResetPassword'
 
 
 const App = () => {
@@ -25,7 +26,7 @@ const App = () => {
       </KeyboardProvider>
     </Provider>
     // <View style={styles.container}>
-    //   <BottomSheet />
+    //   <ResetPassword />
     // </View>
   )
 }

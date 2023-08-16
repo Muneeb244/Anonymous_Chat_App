@@ -6,15 +6,36 @@ import { useState } from 'react';
 import { Formik } from "formik";
 import * as yup from 'yup';
 import FormButton from '../../components/FormButton';
-// import { useToast } from "react-native-toast-notifications";
+import { useDispatch, useSelector } from 'react-redux';
+import { verifyUser, setErrorMessage, forgotPassword } from '../../redux/Reducers/authSlice'
 
 const ForgotPassword = ({navigation}) => {
 
+    const {loading, error, verificationCode} = useSelector(state => state.user)
+    const dispatch = useDispatch();
+    const [email, setEmail] = useState(null);
 
+    useEffect(() => {
+        if (verificationCode) {
+            showToastWithGravity()
+            navigation.navigate('otp', {reset: true, email})
+            // if(reset) navigation.navigate('otp', { user, verificationCode })
+            // else navigation.navigate('otp', {reset: true, email: values.email})
+        }
+    }, [verificationCode])
 
+    const showToastWithGravity = () => {
+        ToastAndroid.showWithGravity(
+            'An OTP has been sent to your email address',
+            ToastAndroid.SHORT,
+            ToastAndroid.BOTTOM,
+        );
+    };
 
     const temp = (values) => {
-        navigation.navigate('otp')
+        setEmail(values.email)
+        dispatch(forgotPassword(values))
+        // navigation.navigate('otp', {reset: true, email: values.email})
     }
 
     const forgotSchema = yup.object().shape({
@@ -47,7 +68,7 @@ const ForgotPassword = ({navigation}) => {
                             visible={touched["email"]}
                         />
 
-                        <FormButton text="continue" onSubmit={handleSubmit} />
+                        <FormButton text="continue" onSubmit={handleSubmit} loading={loading} />
                     </KeyboardAvoidingView>
                 )}
             </Formik>

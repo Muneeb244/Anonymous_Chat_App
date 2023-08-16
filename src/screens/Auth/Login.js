@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, View, TextInput, KeyboardAvoidingView } from 'react-native'
-import React from 'react';
+import React, { useEffect } from 'react';
 import Background from '../../components/Background'
 import Input from '../../components/Input'
 import FormButton from '../../components/FormButton'
@@ -7,13 +7,30 @@ import GoogleC from '../../components/GoogleC'
 import ErrorMessage from '../../components/ErrorMessage';
 import { Formik } from "formik";
 import * as yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
+import { signinUser, setErrorMessage } from '../../redux/Reducers/authSlice'
+
 // import { loginSchema } from '../../utils/yupSchemas';
 
-const Login = ({navigation}) => {
+const Login = ({ navigation }) => {
 
+    const dispatch = useDispatch();
+    const { loading, token, error } = useSelector(state => state.user)
+
+    useEffect(() => {
+        if (token) {
+            navigation.navigate('homenavigation')
+        }
+        if (error) {
+            dispatch(setErrorMessage(null))
+            alert(error)
+        }
+    })
 
     const temp = (values) => {
-        navigation.navigate('homenavigation')
+        console.log(values)
+        setErrorMessage(null)
+        dispatch(signinUser(values))
     }
 
     const loginSchema = yup.object().shape({
@@ -65,7 +82,7 @@ const Login = ({navigation}) => {
                             error={errors["password"]}
                             visible={touched["password"]}
                         />
-                        <FormButton text="login" onSubmit={handleSubmit} />
+                        <FormButton text="login" onSubmit={handleSubmit} loading={loading} />
                         <View style={styles.forgot}>
                             <Text style={styles.forgotText} onPress={() => navigation.navigate('forgot')} >Forgot password?</Text>
                         </View>
@@ -167,7 +184,7 @@ const styles = StyleSheet.create({
     },
     forgotText: {
         color: '#fff',
-        fontSize: 15,   
+        fontSize: 15,
         textDecorationLine: 'underline'
     }
 })

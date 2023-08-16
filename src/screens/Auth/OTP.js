@@ -7,9 +7,9 @@ import { Formik } from "formik";
 import * as yup from 'yup';
 import FormButton from '../../components/FormButton';
 import { useDispatch, useSelector } from 'react-redux';
-import { verifyUser } from '../../redux/Reducers/authSlice'
+import { verifyUser, signupUser, setErrorMessage, setVerificationCode } from '../../redux/Reducers/authSlice'
 
-const OTP = ({ route }) => {
+const OTP = ({ route, navigation }) => {
 
     const optRef1 = useRef();
     const optRef2 = useRef();
@@ -17,17 +17,26 @@ const OTP = ({ route }) => {
     const optRef4 = useRef();
     const [count, setCount] = useState(0);
     const [resend, setResend] = useState(false);
-    const { user={"email": "muneeb@gmail.com", "emoji": "😲", "name": "Muneeb Ahmad", "password": "000000", "username": "muneeb"} } = route.params;
-    const { loading, error, verificationCode } = useSelector(state => state.user)
+    const [matched, setMatched] = useState(false);
+    // const { user={"email": "muneeb@gmail.com", "emoji": "😲", "name": "Muneeb Ahmad", "password": "000000", "username": "muneeb"} } = route.params;
+    const { user, reset, email } = route.params;
+
+    const { loading, error, verificationCode, message } = useSelector(state => state.user)
 
     const dispatch = useDispatch();
-    // console.log("roter value from OTP",user,verificationCode)
 
 
     useEffect(() => {
+        if(!loading && matched && !error) {
+            dispatch(setVerificationCode(null))
+            navigation.navigate('login')
+        }
+        if (error) {
+            alert(error)
+            dispatch(setErrorMessage(null))
+        }
         const interval = setInterval(() => {
             if (count <= 0) {
-                // setResend(false);
                 return clearInterval(interval);
             };
             setCount(count - 1)
@@ -37,8 +46,6 @@ const OTP = ({ route }) => {
         };
     }, [count])
 
-    if (error) alert(error)
-    // console.log(verificationCode)
 
     const showToastWithGravity = () => {
         ToastAndroid.showWithGravity(
@@ -54,8 +61,17 @@ const OTP = ({ route }) => {
             setCount(60);
             setResend(true);
         }
-        if (verificationCode == Object.values(values).join("")) return alert("OTP Verified")
+        if (verificationCode == Object.values(values).join("")){
+            if(reset){
+                dispatch(setVerificationCode(null))
+                return navigation.navigate('resetPassword', {email})
+            }
+            dispatch(signupUser(user))
+            dispatch(setVerificationCode(null))
+            setMatched(true)
+        } else alert("OTP does not match")
     }
+
 
 
 
@@ -67,7 +83,6 @@ const OTP = ({ route }) => {
         showToastWithGravity()
     }
 
-    if(error) alert(error)
 
     const otpSchema = yup.object().shape({
         otp1: yup.number().typeError("OTP must be a number").required().label("OTP"),
@@ -87,7 +102,7 @@ const OTP = ({ route }) => {
                 onSubmit={confirmOTP}
                 validationSchema={otpSchema}
             >
-                {({ values, errors, touched, handleChange, setFieldValue, handleBlur, handleSubmit }) => (
+                {({ values, errors, setFieldValue, handleBlur, handleSubmit }) => (
                     <KeyboardAvoidingView style={styles.form} >
                         <Text style={styles.label}>Your OTP</Text>
                         <View style={styles.parent}>
@@ -162,7 +177,7 @@ const OTP = ({ route }) => {
                             </TouchableOpacity>
                             <Text style={styles.timerCount}>{count !== 0 ? count + " seconds" : ""}</Text>
                         </View>}
-                        <FormButton text="Submit" onSubmit={handleSubmit} />
+                        <FormButton text="Submit" onSubmit={handleSubmit} loading={loading} />
                     </KeyboardAvoidingView>
                 )}
             </Formik>
