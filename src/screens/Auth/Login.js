@@ -8,7 +8,7 @@ import ErrorMessage from '../../components/ErrorMessage';
 import { Formik } from "formik";
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { signinUser, setErrorMessage } from '../../redux/Reducers/authSlice'
+import { signinUser, setErrorMessage, setVerificationCode } from '../../redux/Reducers/authSlice'
 
 // import { loginSchema } from '../../utils/yupSchemas';
 
@@ -19,17 +19,16 @@ const Login = ({ navigation }) => {
 
     useEffect(() => {
         if (token) {
+            dispatch(setVerificationCode(null))
             navigation.navigate('homenavigation')
         }
         if (error) {
             dispatch(setErrorMessage(null))
             alert(error)
         }
-    })
+    }, [token, error])
 
     const temp = (values) => {
-        console.log(values)
-        setErrorMessage(null)
         dispatch(signinUser(values))
     }
 

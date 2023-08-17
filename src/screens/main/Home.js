@@ -7,8 +7,8 @@ import { useSelector } from 'react-redux'
 
 const Home = () => {
 
-    const {verificationCode} = useSelector(state => state.user);
-    console.log(verificationCode)
+    const {verificationCode, token} = useSelector(state => state.user);
+    console.log("from home",verificationCode, token)
 
 
     const list = [

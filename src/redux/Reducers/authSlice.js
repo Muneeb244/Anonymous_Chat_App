@@ -21,7 +21,7 @@ const authSlice = createSlice({
             state.token = action.payload;
         },
         setVerificationCode: (state, action) => {
-            state.token = action.payload;
+            state.verificationCode = action.payload;
         },
         setMessage: (state, action) => {
             state.message = action.payload;
@@ -60,12 +60,12 @@ const authSlice = createSlice({
         builder.addCase(signinUser.pending, (state, action) => { state.loading = true }),
             builder.addCase(signinUser.fulfilled, (state, action) => {
                 state.loading = false;
-                console.log("from signin user", action.payload)
+                // console.log("from signin user", action.payload)
                 state.token = action.payload.token;
             }),
             builder.addCase(signinUser.rejected, (state, action) => {
                 state.loading = false;
-                console.log("from signin error", action.payload)
+                // console.log("from signin error", action.payload)
                 state.error = action.payload;
             })
 
@@ -92,6 +92,19 @@ const authSlice = createSlice({
             builder.addCase(resetPassword.rejected, (state, action) => {
                 state.loading = false;
                 console.log("from reset password error", action.payload)
+                state.error = action.payload;
+            })
+
+        //get profile
+        builder.addCase(getProfile.pending, (state, action) => { state.loading = true }),
+            builder.addCase(getProfile.fulfilled, (state, action) => {
+                state.loading = false;
+                console.log("from get profile user", action.payload)
+                state.user = action.payload.user;
+            }),
+            builder.addCase(getProfile.rejected, (state, action) => {
+                state.loading = false;
+                console.log("from get profile error", action.payload)
                 state.error = action.payload;
             })
     }
@@ -128,6 +141,18 @@ export const resetPassword = createAsyncThunk('resetpassword', async (body, { re
     return Axios.post('/user/reset', body)
         .then((response) => response.data)
         .catch((error) => { console.log("from reset password thunk", error.response.data); return rejectWithValue(error.response.data.error) })
+})
+
+export const getProfile = createAsyncThunk('getprofile', async (body, { rejectWithValue, getState }) => {
+    const state = getState();
+    console.log("from thunk geprofile",state.user.token)
+    return Axios.get('/user/profile', {
+        headers: {
+            'authorization': state.user.token
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => { console.log("from get profile thunk", error.response.data); return rejectWithValue(error.response.data.error) })
 })
 
 export default authSlice.reducer;

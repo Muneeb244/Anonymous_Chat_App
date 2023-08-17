@@ -3,12 +3,28 @@ import React, { useState, useEffect } from 'react'
 import Background from '../../components/Background'
 import randomEmoji from '../../utils/randomEmoji'
 import { useKeyboard } from '../../context/KeyboardContext'
+import DropdownMenu from '../../components/DropdownMenu'
+import { useDispatch, useSelector } from 'react-redux';
+import { resetPassword, setErrorMessage, setMessage, setVerificationCode, getProfile } from '../../redux/Reducers/authSlice'
+import Loading from '../../components/Loading'
+// import {
+//   Menu,
+//   MenuProvider,
+//   MenuOptions,
+//   MenuOption,
+//   MenuTrigger,
+// } from "react-native-popup-menu";
+// import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+
 
 const Profile = () => {
 
   const { setKeyboardVisible } = useKeyboard();
-
+  const dispatch = useDispatch();
+  const { loading, error, message, token } = useSelector(state => state.user)
+  
   useEffect(() => {
+    dispatch(getProfile())
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardVisible(true);
     });
@@ -48,68 +64,76 @@ const Profile = () => {
     setEmail(temp.email);
   }
 
+  const logout = () => {
+    console.log('logout')
+  }
+
 
   return (
-    <ScrollView>
-      <Background>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          style={styles.parent}>
-          <View style={styles.header}>
-            <Text style={styles.heading}>Profile</Text>
-            <Image source={require('../../assets/bomb.png')} style={styles.image} />
-          </View>
-          <View style={[styles.emojiContainer]}>
-            <Text style={styles.emoji}>{emoji ? emoji : temp.emoji}</Text>
-          </View>
-          <TouchableOpacity style={styles.button} onPress={() => setEmoji(randomEmoji())}>
-            <Text style={styles.btnText}>change emoji</Text>
-          </TouchableOpacity>
-          <TextInput
-            keyboardType='default'
-            style={styles.input}
-            placeholder='cool username'
-            value={username}
-            onChangeText={(text) => setUsername(text.slice(1))}
-          />
-          <TextInput
-            keyboardType='default'
-            style={styles.input}
-            placeholder='name'
-            value={name}
-            onChangeText={(text) => {
-              if (text.length > 0) {
-                setName(text.charAt(0) === ' ' ? text.slice(1) : text);
-              } else {
-                setName('');
-              }
-            }}
-          />
-          <TextInput
-            keyboardType='email-address'
-            style={styles.input}
-            placeholder='anonymous@email.com'
-            value={email}
-            onChangeText={(text) => {
-              if (text.length > 0) {
-                setEmail(text.charAt(0) === ' ' ? text.slice(1) : text);
-              } else {
-                setEmail('');
-              }
-            }}
-          />
+    <Loading />
+    // <ScrollView>
+    //   <Background>
+    //     <TouchableOpacity onPress={logout}>
+    //       <Text style={styles.logoutText}>logout</Text>
+    //     </TouchableOpacity>
+    //     <KeyboardAvoidingView
+    //       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    //       style={styles.parent}>
+    //       <View style={styles.header}>
+    //         <Text style={styles.heading}>Profile</Text>
+    //         <Image source={require('../../assets/bomb.png')} style={styles.image} />
+    //       </View>
+    //       <View style={[styles.emojiContainer]}>
+    //         <Text style={styles.emoji}>{emoji ? emoji : temp.emoji}</Text>
+    //       </View>
+    //       <TouchableOpacity style={styles.button} onPress={() => setEmoji(randomEmoji())}>
+    //         <Text style={styles.btnText}>change emoji</Text>
+    //       </TouchableOpacity>
+    //       <TextInput
+    //         keyboardType='default'
+    //         style={styles.input}
+    //         placeholder='cool username'
+    //         value={username}
+    //         onChangeText={(text) => setUsername(text.slice(1))}
+    //       />
+    //       <TextInput
+    //         keyboardType='default'
+    //         style={styles.input}
+    //         placeholder='name'
+    //         value={name}
+    //         onChangeText={(text) => {
+    //           if (text.length > 0) {
+    //             setName(text.charAt(0) === ' ' ? text.slice(1) : text);
+    //           } else {
+    //             setName('');
+    //           }
+    //         }}
+    //       />
+    //       <TextInput
+    //         keyboardType='email-address'
+    //         style={styles.input}
+    //         placeholder='anonymous@email.com'
+    //         value={email}
+    //         onChangeText={(text) => {
+    //           if (text.length > 0) {
+    //             setEmail(text.charAt(0) === ' ' ? text.slice(1) : text);
+    //           } else {
+    //             setEmail('');
+    //           }
+    //         }}
+    //       />
 
-          <View style={styles.buttons}>
-            <TouchableOpacity style={styles.button} onPress={() => reset()}>
-              <Text style={styles.btnText}>reset</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.btnText}>update</Text>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
-      </Background>
-    </ScrollView>
+    //       <View style={styles.buttons}>
+    //         <TouchableOpacity style={styles.button} onPress={() => reset()}>
+    //           <Text style={styles.btnText}>reset</Text>
+    //         </TouchableOpacity>
+    //         <TouchableOpacity style={styles.button}>
+    //           <Text style={styles.btnText}>update</Text>
+    //         </TouchableOpacity>
+    //       </View>
+    //     </KeyboardAvoidingView>
+    //   </Background>
+    // </ScrollView>
   )
 }
 
@@ -117,7 +141,7 @@ export default Profile
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 50,
+    // marginTop: 50,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -182,5 +206,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 20,
+  },
+  MenuProvider: {
+    backgroundColor: 'red'
+  },
+  menuText: {
+    color: "#fff",
+    fontSize: 18,
+  },
+  logoutText: {
+    color: '#fff',
+    fontSize: 18,
+    alignSelf: 'flex-end',
+    marginRight: 20,
+    marginTop: 10,
   }
 })

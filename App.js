@@ -12,6 +12,7 @@ import { KeyboardProvider } from './src/context/KeyboardContext';
 import { Provider } from 'react-redux';
 import { store } from './src/redux/store/store'
 import ResetPassword from './src/screens/Auth/ResetPassword'
+import DropdownMenu from './src/components/DropdownMenu'
 
 
 const App = () => {
@@ -19,8 +20,9 @@ const App = () => {
     <Provider store={store}>
       <KeyboardProvider>
         <NavigationContainer>
-          {/* <FloatingButton />
-        <HomeNavigation /> */}
+          {/* <FloatingButton /> */}
+        {/* <HomeNavigation /> */}
+        {/* <DropdownMenu /> */}
           <AuthNavigation />
         </NavigationContainer>
       </KeyboardProvider>
