@@ -13,7 +13,7 @@ const HomeNavigation = () => {
   return (
     <>
     <FloatingButton />
-      <Stack.Navigator screenOptions={{ animation: 'flip', headerShown: false }} initialRouteName='profile'>
+      <Stack.Navigator screenOptions={{ animation: 'flip', headerShown: false }} initialRouteName='home'>
         <Stack.Screen
           name="home"
           component={Home}

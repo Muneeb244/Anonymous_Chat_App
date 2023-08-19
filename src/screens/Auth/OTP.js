@@ -15,7 +15,7 @@ const OTP = ({ route, navigation }) => {
     const optRef2 = useRef();
     const optRef3 = useRef();
     const optRef4 = useRef();
-    const [count, setCount] = useState(0);
+    const [count, setCount] = useState(60);
     const [resend, setResend] = useState(false);
     const [matched, setMatched] = useState(false);
     // const { user={"email": "muneeb@gmail.com", "emoji": "😲", "name": "Muneeb Ahmad", "password": "000000", "username": "muneeb"} } = route.params;

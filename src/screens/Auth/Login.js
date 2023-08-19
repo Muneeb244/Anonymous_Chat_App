@@ -1,7 +1,6 @@
 import { Image, StyleSheet, Text, View, TextInput, KeyboardAvoidingView } from 'react-native'
 import React, { useEffect } from 'react';
 import Background from '../../components/Background'
-import Input from '../../components/Input'
 import FormButton from '../../components/FormButton'
 import GoogleC from '../../components/GoogleC'
 import ErrorMessage from '../../components/ErrorMessage';
@@ -9,8 +8,8 @@ import { Formik } from "formik";
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { signinUser, setErrorMessage, setVerificationCode } from '../../redux/Reducers/authSlice'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// import { loginSchema } from '../../utils/yupSchemas';
 
 const Login = ({ navigation }) => {
 
@@ -19,6 +18,8 @@ const Login = ({ navigation }) => {
 
     useEffect(() => {
         if (token) {
+            AsyncStorage.setItem('my-key', value);
+            console.log("from login",token)
             dispatch(setVerificationCode(null))
             navigation.navigate('homenavigation')
         }

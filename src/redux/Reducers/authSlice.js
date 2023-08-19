@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import Axios from 'axios';
 import instance from '../../utils/Axios/url';
-
+ 
 const initialState = {
+    user: null,
     token: null,
     loading: false,
     error: null,
@@ -25,6 +26,9 @@ const authSlice = createSlice({
         },
         setMessage: (state, action) => {
             state.message = action.payload;
+        },
+        setUser: (state, action) => {
+            state.user = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -33,12 +37,12 @@ const authSlice = createSlice({
         builder.addCase(verifyUser.pending, (state, action) => {state.loading = true }),
             builder.addCase(verifyUser.fulfilled, (state, action) => {
                 state.loading = false;
-                console.log("from verify user", action.payload)
+                // console.log("from verify user", action.payload)
                 state.verificationCode = action.payload.verificationCode;
             }),
             builder.addCase(verifyUser.rejected, (state, action) => {
                 state.loading = false;
-                console.log("from verify error", action)
+                // console.log("from verify error", action)
                 state.error = action.payload;
             })
 
@@ -47,12 +51,12 @@ const authSlice = createSlice({
         builder.addCase(signupUser.pending, (state, action) => { state.loading = true }),
             builder.addCase(signupUser.fulfilled, (state, action) => {
                 state.loading = false;
-                console.log("from signup user", action.payload)
+                // console.log("from signup user", action.payload)
                 state.message = action.payload.message;
             }),
             builder.addCase(signupUser.rejected, (state, action) => {
                 state.loading = false;
-                console.log("from signup error", action.payload)
+                // console.log("from signup error", action.payload)
                 state.error = action.payload;
             })
 
@@ -65,7 +69,7 @@ const authSlice = createSlice({
             }),
             builder.addCase(signinUser.rejected, (state, action) => {
                 state.loading = false;
-                // console.log("from signin error", action.payload)
+                // console.log("from signin error", action)
                 state.error = action.payload;
             })
 
@@ -73,12 +77,12 @@ const authSlice = createSlice({
         builder.addCase(forgotPassword.pending, (state, action) => { state.loading = true }),
             builder.addCase(forgotPassword.fulfilled, (state, action) => {
                 state.loading = false;
-                console.log("from forgot password user", action.payload)
+                // console.log("from forgot password user", action.payload)
                 state.verificationCode = action.payload.verificationCode;
             }),
             builder.addCase(forgotPassword.rejected, (state, action) => {
                 state.loading = false;
-                console.log("from forgot password error", action.payload)
+                // console.log("from forgot password error", action.payload)
                 state.error = action.payload;
             })
 
@@ -86,12 +90,12 @@ const authSlice = createSlice({
         builder.addCase(resetPassword.pending, (state, action) => { state.loading = true }),
             builder.addCase(resetPassword.fulfilled, (state, action) => {
                 state.loading = false;
-                console.log("from reset password user", action.payload)
+                // console.log("from reset password user", action.payload)
                 state.message = action.payload.message;
             }),
             builder.addCase(resetPassword.rejected, (state, action) => {
                 state.loading = false;
-                console.log("from reset password error", action.payload)
+                // console.log("from reset password error", action.payload)
                 state.error = action.payload;
             })
 
@@ -99,12 +103,27 @@ const authSlice = createSlice({
         builder.addCase(getProfile.pending, (state, action) => { state.loading = true }),
             builder.addCase(getProfile.fulfilled, (state, action) => {
                 state.loading = false;
-                console.log("from get profile user", action.payload)
-                state.user = action.payload.user;
+                // console.log("from get profile user", action.payload)
+                state.user = action.payload;
+                console.log(state.user)
             }),
             builder.addCase(getProfile.rejected, (state, action) => {
                 state.loading = false;
-                console.log("from get profile error", action.payload)
+                // console.log("from get profile error", action.payload)
+                state.error = action.payload;
+            })
+
+        // update profile
+        builder.addCase(updateProfile.pending, (state, action) => { state.loading = true }),
+            builder.addCase(updateProfile.fulfilled, (state, action) => {
+                state.loading = false;
+                // console.log("from update profile user", action.payload)
+                state.message = action.payload.message;
+                state.user = action.payload.user;
+            }),
+            builder.addCase(updateProfile.rejected, (state, action) => {
+                state.loading = false;
+                // console.log("from update profile error", action.payload)
                 state.error = action.payload;
             })
     }
@@ -122,38 +141,49 @@ export const signupUser = createAsyncThunk('signupuser', async (body, { rejectWi
     console.log("from thunk signup", body)
     return Axios.post('/user/signup', body)
         .then((response) => response.data)
-        .catch((error) => { console.log("from signup thunk", error.response.data.error); return rejectWithValue(error.response.data.error) })
+        .catch((error) => rejectWithValue(error.response.data.error))
 })
 
 export const signinUser = createAsyncThunk('signinuser', async (body, { rejectWithValue }) => {
     return Axios.post('/user/signin', body)
         .then((response) => response.data)
-        .catch((error) => { console.log("from signin thunk", error.response.data); return rejectWithValue(error.response.data.error) })
+        .catch((error) => rejectWithValue(error.response.data.error))
 })
 
 export const forgotPassword = createAsyncThunk('forgotpassword', async (body, { rejectWithValue }) => {
     return Axios.post('/user/forgot', body)
         .then((response) => response.data)
-        .catch((error) => { console.log("from forgot password thunk", error.response.data); return rejectWithValue(error.response.data.error) })
+        .catch((error) => rejectWithValue(error.response.data.error))
 })
 
 export const resetPassword = createAsyncThunk('resetpassword', async (body, { rejectWithValue }) => {
     return Axios.post('/user/reset', body)
         .then((response) => response.data)
-        .catch((error) => { console.log("from reset password thunk", error.response.data); return rejectWithValue(error.response.data.error) })
+        .catch((error) => rejectWithValue(error.response.data.error) )
 })
 
 export const getProfile = createAsyncThunk('getprofile', async (body, { rejectWithValue, getState }) => {
     const state = getState();
-    console.log("from thunk geprofile",state.user.token)
     return Axios.get('/user/profile', {
         headers: {
             'authorization': state.user.token
         }
     })
         .then((response) => response.data)
-        .catch((error) => { console.log("from get profile thunk", error.response.data); return rejectWithValue(error.response.data.error) })
+        .catch((error) => rejectWithValue(error.response.data.error))
+})
+
+export const updateProfile = createAsyncThunk('updateprofile', async (body, { rejectWithValue, getState }) => {
+    const state = getState();
+    console.log("from thunk update", body)
+    return Axios.put('/user/update', body, {
+        headers: {
+            'authorization': state.user.token
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => rejectWithValue(error.response.data.error))
 })
 
 export default authSlice.reducer;
-export const { setErrorMessage, setToken, setVerificationCode, setMessage } = authSlice.actions;
+export const { setErrorMessage, setToken, setVerificationCode, setMessage, setUser } = authSlice.actions;
