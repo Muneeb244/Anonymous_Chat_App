@@ -1,43 +1,59 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import AuthNavigation from './src/navigations/AuthNavigation'
-import ForgotPassword from './src/screens/Auth/ForgotPassword'
-import OTP from './src/screens/Auth/OTP'
-import Home from './src/screens/main/Home'
 import HomeNavigation from './src/navigations/HomeNavigation'
-import FloatingButton from './src/components/FloatingButton'
-import BottomSheet from './src/components/BottomSheet'
-import { KeyboardProvider } from './src/context/KeyboardContext';
-import { Provider } from 'react-redux';
+import { KeyboardProvider } from './src/context/KeyboardContext'
+import { Provider } from 'react-redux'
 import { store } from './src/redux/store/store'
-import ResetPassword from './src/screens/Auth/ResetPassword'
-import DropdownMenu from './src/components/DropdownMenu'
-
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import Loading from './src/components/Loading'
 
 const App = () => {
+  const [authenticated, setAuthenticated] = useState(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem('token')
+      .then((token) => {
+        console.log('Token:', token);
+        setAuthenticated(!!token);
+      })
+      .catch((error) => {
+        console.error('Error reading token from AsyncStorage:', error);
+        setAuthenticated(false);
+      });
+  }, []);
+
+  // if (authenticated === null) {
+  //   return (
+  //     <View style={styles.container}>
+  //       <Loading />
+  //     </View>
+  //   );
+  // }
+
   return (
     <Provider store={store}>
       <KeyboardProvider>
-        <NavigationContainer>
-          {/* <FloatingButton /> */}
-        {/* <HomeNavigation /> */}
-        {/* <DropdownMenu /> */}
-          <AuthNavigation />
-        </NavigationContainer>
+
+        {authenticated === null ?
+          <Loading />
+          :
+          <NavigationContainer>
+            {authenticated ? <HomeNavigation /> : <AuthNavigation />}
+          </NavigationContainer>}
       </KeyboardProvider>
+
     </Provider>
-    // <View style={styles.container}>
-    //   <ResetPassword />
-    // </View>
-  )
+  );
 }
 
 export default App
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 })

@@ -1,11 +1,16 @@
-import { Image, StyleSheet, Text, TouchableOpacity , View, useWindowDimensions } from 'react-native'
-import React from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native'
+import React, { useEffect } from 'react';
 import Background from '../components/Background';
 import { LinearTextGradient } from "react-native-text-gradient";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const GettingStarted = ({navigation}) => {
+
+const GettingStarted = ({ navigation }) => {
 
     const { width, height } = useWindowDimensions();
+    useEffect(() => {
+        AsyncStorage.setItem('first', 'true')
+    }, [])
 
     const styles = StyleSheet.create({
         container: {
@@ -109,7 +114,7 @@ const GettingStarted = ({navigation}) => {
                     <Text style={styles.infoHeading}>Badaboom</Text>
                     <Text style={styles.infoText}>Welcome to badaboom! add and reply to posts. You see those posts that users has published 10Km away from you</Text>
                 </View>
-                <TouchableOpacity  style={styles.start} onPress={() => navigation.navigate('login')}>
+                <TouchableOpacity style={styles.start} onPress={() => navigation.navigate('login')}>
                     <View style={styles.startChild} >
                         <Text style={styles.startText}>Start</Text>
                         <Image source={require('../assets/bomb.png')} style={styles.image} />

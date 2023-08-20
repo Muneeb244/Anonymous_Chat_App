@@ -7,6 +7,7 @@ import DropdownMenu from '../../components/DropdownMenu'
 import { useDispatch, useSelector } from 'react-redux';
 import { resetPassword, setErrorMessage, setMessage, setVerificationCode, getProfile, setUser, setToken, updateProfile } from '../../redux/Reducers/authSlice'
 import Loading from '../../components/Loading'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Profile = ({ navigation }) => {
@@ -14,7 +15,6 @@ const Profile = ({ navigation }) => {
   const { setKeyboardVisible } = useKeyboard();
   const dispatch = useDispatch();
   const { loading, error, message, token, user } = useSelector(state => state.user)
-  console.log("from profile",user)
 
   const handleBackPress = () => {
     Alert.alert(
@@ -43,7 +43,7 @@ const Profile = ({ navigation }) => {
   useEffect(() => {
     if (!user) dispatch(getProfile())
     else setData()
-    // console.log("from profile ", user, token, loading)
+
     if (error) {
       alert(error)
       dispatch(setErrorMessage(null))
@@ -72,12 +72,6 @@ const Profile = ({ navigation }) => {
     };
   }, [setKeyboardVisible, error, user, message]);
 
-  const temp = {
-    username: 'meverik',
-    name: "Muneeb Ahmad",
-    emoji: "😀",
-    email: "muneeb@gmail.com",
-  }
 
   const [emoji, setEmoji] = useState(null);
   const [username, setUsername] = useState(null);
@@ -101,8 +95,9 @@ const Profile = ({ navigation }) => {
   const logout = () => {
     dispatch(setUser(null))
     dispatch(setToken(null))
+    AsyncStorage.removeItem('token')
     alert("logout successfully")
-    navigation.replace('login')
+    navigation.navigate('login')
   }
 
   const update = () => {

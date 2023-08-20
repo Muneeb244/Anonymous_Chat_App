@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, PermissionsAndroid, Image, KeyboardAvoidingView, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, PermissionsAndroid, Image, KeyboardAvoidingView, TextInput, TouchableOpacity, Keyboard, ScrollView, Alert, BackHandler } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Background from '../../components/Background';
 import Geolocation from 'react-native-geolocation-service';
@@ -12,16 +12,57 @@ import BottomSheet from '../../components/BottomSheet';
 import Entypo from 'react-native-vector-icons/Entypo';
 import mime from 'mime';
 import { useKeyboard } from '../../context/KeyboardContext';
+import { useDispatch, useSelector } from 'react-redux';
+import {post, setErrorMessage} from '../../redux/Reducers/postSlice'
 
 const AddPost = ({ navigation }) => {
 
   const [coordinates, setCoordinates] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
-
   const { setKeyboardVisible } = useKeyboard();
+  const [imageUploadLoading, setImageUploadLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { loading, error, message  } = useSelector(state => state.post)
+
+  const handleBackPress = () => {
+    Alert.alert(
+      "Exit app",
+      "Exiting the application?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => {
+          },
+          styles: 'cancel',
+        },
+        {
+          text: 'ok',
+          onPress: () => BackHandler.exitApp(),
+        },
+      ],
+      {
+        cancelable: false,
+      },
+    );
+    return true;
+  }
+
 
   useEffect(() => {
+
+
+    if(error){
+      alert(error)
+      dispatch(setErrorMessage(null))
+    }
+
+    if(message){
+      alert(message)
+      dispatch(setErrorMessage(null))
+      // navigation.replace('home')
+    }
+
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardVisible(true);
     });
@@ -31,12 +72,16 @@ const AddPost = ({ navigation }) => {
     });
 
     requestLocationPermission();
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
 
     return () => {
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
     };
-  }, [])
+  }, [loading])
+
+
 
   const requestLocationPermission = async () => {
     try {
@@ -122,7 +167,9 @@ const AddPost = ({ navigation }) => {
     }
   }
 
+
   const cloudinaryUpload = async (filename) => {
+    setImageUploadLoading(true)
     const data = new FormData();
     const newImageUri = "file:///" + image.path.split("file:/").join("");
     data.append('file', {
@@ -137,18 +184,22 @@ const AddPost = ({ navigation }) => {
         body: data
       })
       res = await res.json();
+      setImageUploadLoading(false)
       return res.url;
     } catch (error) {
-      // setLoading(false)
       console.log("from cloudinary", error)
+      setImageUploadLoading(false)
     }
   }
 
 
-  const temp = async (values) => {
-    // setLoading(true)
-    filename = image.path.split('/').pop();
-    values.imageURL = await cloudinaryUpload(filename)
+  const handleSubmit = async (values) => {
+    if (image) {
+      filename = image?.path.split('/').pop();
+      values.imageURL = await cloudinaryUpload(filename)
+    }
+    values.coordinates = coordinates;
+    dispatch(post(values))
     console.log(values)
   }
 
@@ -165,7 +216,7 @@ const AddPost = ({ navigation }) => {
         </View>
         <Formik
           initialValues={{ post: "" }}
-          onSubmit={temp}
+          onSubmit={handleSubmit}
           validationSchema={postSchema}
         >
           {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
@@ -198,7 +249,7 @@ const AddPost = ({ navigation }) => {
                 error={errors["post"]}
                 visible={touched["post"]}
               />
-              <FormButton text="post" onSubmit={handleSubmit} />
+              <FormButton text="post" onSubmit={handleSubmit} loading={loading || imageUploadLoading} />
               <BottomSheet modalVisible={modalVisible} setModalVisible={setModalVisible} gallery={ChoosePhotoFromGallery} camera={TakePhotoFromCamera} />
             </KeyboardAvoidingView>
 

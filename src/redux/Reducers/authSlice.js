@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import Axios from 'axios';
 import instance from '../../utils/Axios/url';
+import AsyncStorage from '@react-native-async-storage/async-storage';
  
 const initialState = {
     user: null,
@@ -131,9 +132,8 @@ const authSlice = createSlice({
 
 
 export const verifyUser = createAsyncThunk('verifyuser', async (body, { rejectWithValue }) => {
-    console.log("from thunk verify", body)
     return Axios.post('/user/verify', body)
-        .then((response) => { console.log("from thunk verify", response); return response.data})
+        .then((response) => response.data)
         .catch((error) => rejectWithValue(error.response.data.error) )
 })
 
@@ -162,11 +162,14 @@ export const resetPassword = createAsyncThunk('resetpassword', async (body, { re
         .catch((error) => rejectWithValue(error.response.data.error) )
 })
 
-export const getProfile = createAsyncThunk('getprofile', async (body, { rejectWithValue, getState }) => {
-    const state = getState();
+export const getProfile = createAsyncThunk('getprofile', async (body, { rejectWithValue }) => {
+
+    //check point
+    const token = await AsyncStorage.getItem('token');
+    console.log("from thunk getprofile", token)
     return Axios.get('/user/profile', {
         headers: {
-            'authorization': state.user.token
+            'authorization': token
         }
     })
         .then((response) => response.data)
@@ -174,11 +177,10 @@ export const getProfile = createAsyncThunk('getprofile', async (body, { rejectWi
 })
 
 export const updateProfile = createAsyncThunk('updateprofile', async (body, { rejectWithValue, getState }) => {
-    const state = getState();
-    console.log("from thunk update", body)
+    const token = await AsyncStorage.getItem('token');
     return Axios.put('/user/update', body, {
         headers: {
-            'authorization': state.user.token
+            'authorization': token
         }
     })
         .then((response) => response.data)

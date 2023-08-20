@@ -1,15 +1,56 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useRef, useState } from 'react'
+import { FlatList, StyleSheet, Text, TouchableOpacity, View, Alert, BackHandler } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import Background from '../../components/Background'
 import Card from '../../components/Card'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch} from 'react-redux'
+import {getPosts, setErrorMessage, setPosts} from '../../redux/Reducers/postSlice'
 
 
 const Home = () => {
 
-    const {verificationCode, token} = useSelector(state => state.user);
-    console.log("from home",verificationCode, token)
 
+    const dispatch = useDispatch();
+    const { loading, error, posts } = useSelector(state => state.post)
+    
+    const handleBackPress = () => {
+        Alert.alert(
+          "Exit app",
+          "Exiting the application?",
+          [
+              {
+                  text: "Cancel",
+                  onPress: () => {
+                },
+                styles: 'cancel',
+            },
+            {
+              text: 'ok',
+              onPress: () => BackHandler.exitApp(),
+            },
+        ],
+        {
+            cancelable: false,
+        },
+        );
+        return true;
+    }
+    
+    useEffect(() => {
+        // checkpoint
+        // if(!posts) dispatch(getPosts())
+        if(posts.length == 0) dispatch(getPosts())
+
+        if(error){
+            alert(error)
+            dispatch(setPosts([]))
+            dispatch(setErrorMessage(null))
+        }
+        
+        BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+        }
+      }, [posts, error])
 
     const list = [
         {
