@@ -33,6 +33,7 @@ const useLocation = () => {
   const getLocation = () => {
     Geolocation.getCurrentPosition(
       (position) => {
+        console.log("from get location",position.coords.latitude, position.coords.longitude)
         setCoordinates(
           // latitude: position.coords.latitude,
           // longitude: position.coords.longitude,

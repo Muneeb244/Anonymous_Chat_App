@@ -41,7 +41,7 @@ const Profile = ({ navigation }) => {
 
 
   useEffect(() => {
-    if (!user) dispatch(getProfile())
+    if (!user && token) dispatch(getProfile())
     else setData()
 
     if (error) {
@@ -65,12 +65,13 @@ const Profile = ({ navigation }) => {
     BackHandler.addEventListener("hardwareBackPress", handleBackPress);
 
     return () => {
+      // dispatch(setUser(null))
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
       BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
 
     };
-  }, [setKeyboardVisible, error, user, message]);
+  }, [setKeyboardVisible, error, user, message, token]);
 
 
   const [emoji, setEmoji] = useState(null);
@@ -97,7 +98,7 @@ const Profile = ({ navigation }) => {
     dispatch(setToken(null))
     AsyncStorage.removeItem('token')
     alert("logout successfully")
-    navigation.navigate('login')
+    navigation.navigate('authNavigation')
   }
 
   const update = () => {

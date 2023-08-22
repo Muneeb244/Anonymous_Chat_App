@@ -5,6 +5,7 @@ import Home from '../screens/main/Home';
 import AddPost from '../screens/main/AddPost';
 import Profile from '../screens/main/Profile';
 import FloatingButton from '../components/FloatingButton';
+import AuthNavigation from './AuthNavigation';
 
 const HomeNavigation = () => {
 
@@ -29,6 +30,10 @@ const HomeNavigation = () => {
         <Stack.Screen
           name="floatingButton"
           component={FloatingButton}
+        />
+        <Stack.Screen
+          name="authNavigation"
+          component={AuthNavigation}
         />
       </Stack.Navigator>
     </>
