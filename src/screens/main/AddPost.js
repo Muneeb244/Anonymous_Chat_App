@@ -13,11 +13,12 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import mime from 'mime';
 import { useKeyboard } from '../../context/KeyboardContext';
 import { useDispatch, useSelector } from 'react-redux';
-import {post, setErrorMessage} from '../../redux/Reducers/postSlice'
+import {post, setErrorMessage, setMessage} from '../../redux/Reducers/postSlice'
+import useLocation from '../../hooks/useLocation';
 
 const AddPost = ({ navigation }) => {
 
-  const [coordinates, setCoordinates] = useState({});
+  const { coordinates } = useLocation();
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
   const { setKeyboardVisible } = useKeyboard();
@@ -59,7 +60,7 @@ const AddPost = ({ navigation }) => {
 
     if(message){
       alert(message)
-      dispatch(setErrorMessage(null))
+      dispatch(setMessage(null))
       // navigation.replace('home')
     }
 
@@ -71,7 +72,6 @@ const AddPost = ({ navigation }) => {
       setKeyboardVisible(false);
     });
 
-    requestLocationPermission();
     BackHandler.addEventListener('hardwareBackPress', handleBackPress);
 
     return () => {
@@ -83,44 +83,44 @@ const AddPost = ({ navigation }) => {
 
 
 
-  const requestLocationPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'Badaboom Location Permission',
-          message:
-            'Badaboom needs access to your location ',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        getLocation();
-      } else {
-        alert('Please allow location permission');
-        navigation.replace('home')
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
+  // const requestLocationPermission = async () => {
+  //   try {
+  //     const granted = await PermissionsAndroid.request(
+  //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+  //       {
+  //         title: 'Badaboom Location Permission',
+  //         message:
+  //           'Badaboom needs access to your location ',
+  //         buttonNeutral: 'Ask Me Later',
+  //         buttonNegative: 'Cancel',
+  //         buttonPositive: 'OK',
+  //       },
+  //     );
+  //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+  //       getLocation();
+  //     } else {
+  //       alert('Please allow location permission');
+  //       navigation.replace('home')
+  //     }
+  //   } catch (err) {
+  //     console.warn(err);
+  //   }
+  // };
 
-  const getLocation = () => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        setCoordinates({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude
-        })
-      },
-      (error) => {
-        console.log(error.code, error.message);
-      },
-      { enableHighAccuracy: true, timeout: 2000 }
-    );
-  }
+  // const getLocation = () => {
+  //   Geolocation.getCurrentPosition(
+  //     (position) => {
+  //       setCoordinates({
+  //         latitude: position.coords.latitude,
+  //         longitude: position.coords.longitude
+  //       })
+  //     },
+  //     (error) => {
+  //       console.log(error.code, error.message);
+  //     },
+  //     { enableHighAccuracy: true, timeout: 2000 }
+  //   );
+  // }
 
   const TakePhotoFromCamera = () => {
     try {
@@ -198,7 +198,10 @@ const AddPost = ({ navigation }) => {
       filename = image?.path.split('/').pop();
       values.imageURL = await cloudinaryUpload(filename)
     }
-    values.coordinates = coordinates;
+    values.location = {
+      type: "Point",
+      coordinates: coordinates
+    };
     dispatch(post(values))
     console.log(values)
   }
@@ -208,7 +211,7 @@ const AddPost = ({ navigation }) => {
   });
 
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps="always">
       <Background>
         <View style={styles.header}>
           <Text style={styles.heading}>Add post</Text>

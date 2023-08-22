@@ -15,7 +15,6 @@ const App = () => {
   useEffect(() => {
     AsyncStorage.getItem('token')
       .then((token) => {
-        console.log('Token:', token);
         setAuthenticated(!!token);
       })
       .catch((error) => {
@@ -24,13 +23,6 @@ const App = () => {
       });
   }, []);
 
-  // if (authenticated === null) {
-  //   return (
-  //     <View style={styles.container}>
-  //       <Loading />
-  //     </View>
-  //   );
-  // }
 
   return (
     <Provider store={store}>

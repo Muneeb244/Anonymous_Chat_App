@@ -23,12 +23,20 @@ const postSlice = createSlice({
         setPosts: (state, action) => {
             state.posts = action.payload;
         },
+        filterPosts(state, action) {
+            const { userCoordinates } = action.payload;
+            state.filteredPosts = state.posts.filter((post) => {
+                const distance = calculateDistance(userCoordinates, post.coordinates);
+                return distance <= 10;
+            });
+        },
     },
     extraReducers: (builder) => {
         // get posts
         builder.addCase(getPosts.pending, (state, action) => { state.loading = true }),
             builder.addCase(getPosts.fulfilled, (state, action) => {
                 state.loading = false
+                // console.log("from get posts fullfill", action.payload)
                 state.posts = action.payload
             }),
             builder.addCase(getPosts.rejected, (state, action) => {
@@ -40,12 +48,12 @@ const postSlice = createSlice({
             builder.addCase(post.pending, (state, pending) => { state.loading = true }),
             builder.addCase(post.fulfilled, (state, action) => {
                 state.loading = false
-                console.log("from post fullfill", action.payload)
+                // console.log("from post fullfill", action.payload)
                 state.message = action.payload.message
             }),
             builder.addCase(post.rejected, (state, action) => {
                 state.loading = false
-                console.log("from post error", action.payload)
+                // console.log("from post error", action.payload)
                 state.error = action.payload
             })
     }
@@ -53,8 +61,9 @@ const postSlice = createSlice({
 
 // export const getPosts = createAsyncThunk('post/getPosts', async () => {
 export const getPosts = createAsyncThunk('getPosts', async (body, { rejectWithValue }) => {
+    console.log("body from async thunk is: ", body)
     const token = await AsyncStorage.getItem('token');
-    return axios.get('/post/', {
+    return axios.post('/post/', body, {
         headers: {
             'authorization': token
         }
@@ -70,7 +79,7 @@ export const post = createAsyncThunk('post', async (body, { rejectWithValue }) =
             'authorization': token
         }
     })
-        .then((response) => response.data )
+        .then((response) => response.data)
         .catch((error) => rejectWithValue(error.response.data.error))
 })
 

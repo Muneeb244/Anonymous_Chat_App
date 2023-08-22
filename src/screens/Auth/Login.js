@@ -18,7 +18,6 @@ const Login = ({ navigation }) => {
 
     useEffect(() => {
         if (token) {
-            console.log("from login", token)
             AsyncStorage.setItem('token', token);
             dispatch(setVerificationCode(null))
             navigation.navigate('homenavigation')
